@@ -66,6 +66,7 @@ const cleanup = () => {
   people = [];
 };
 
+console.log(process.env.CLIENT_ID);
 client.login(process.env.CLIENT_ID);
 
 export default { totalDrinks, people, addDrinkToUser, cleanup, getDrinks };
