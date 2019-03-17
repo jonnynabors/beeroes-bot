@@ -1,72 +1,86 @@
-require('dotenv').config();
+import Discord, { User } from "discord.js";
+import Person from "./models/Person";
+import * as _ from "lodash";
+require("dotenv").config();
 
-import Discord, { User } from 'discord.js';
-import Person from './models/Person';
-const client = new Discord.Client();
+export class App {
+  client: Discord.Client;
+  public totalDrinks: number;
+  public people: Person[];
 
-let totalDrinks: number = 0;
-let people: Person[] = [];
-
-client.on('ready', () => {
-  console.log('I am alive and well!');
-});
-
-client.on('message', msg => {
-  if (msg.content.includes('!cheers')) {
-    let drinkName = msg.content.replace('!cheers', '').trimLeft();
-    addDrinkToUser(msg.author, drinkName)
-    totalDrinks++;  
+  constructor(client: Discord.Client) {
+    this.client = client;
+    this.totalDrinks = 0;
+    this.people = [];
   }
 
-  if (msg.content === '!beers') {
-    msg.channel.send(`${totalDrinks} beer(s) have been drunk tonight! 🍺`);
+  public readyHandler() {
+    console.log("I am alive and well!");
   }
 
-  if(msg.content === '!whosdrunk') {
-      msg.channel.send(getDrinks());
+  public cheersHandler(message: Discord.Message) {
+    let drinkName = message.content.replace("!cheers", "").trimLeft();
+    this.addDrinkToUser(message.author, drinkName);
+    this.totalDrinks++;
+    message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
   }
 
-  if(msg.content === '!beeroes-clear') {
-      cleanup();
+  public drinkCountHandler(message: Discord.Message) {
+    message.channel.send(
+      `${this.totalDrinks} drink(s) have been consumed by the server! 🍻🥃`
+    );
   }
-});
 
-const addDrinkToUser = (user: User, drinkName: string) => {
-  let userExists = people.some(person => {
-    return person.user.username == user.username;
-  });
+  public whoIsDrunkHandler(message: Discord.Message) {
+    if (this.people.length === 0) {
+      message.channel.send(
+        "Nobody is drunk because nobody has had anything to drink! 🏝️"
+      );
+    } else {
+      message.channel.send(this.getDrinks());
+    }
+  }
 
-  if (!userExists) {
-    let person: Person = {
-      user: user,
-      drinks: [drinkName]
-    };
-    people.push(person);
-  } else {
-    people.forEach(person => {
-      if (person.user.username === user.username) {
-        person.drinks.push(drinkName);
+  public resetBotHandler() {
+    this.cleanup();
+  }
+
+  private addDrinkToUser(user: User, drinkName: string) {
+    let userExists = this.people.some(person => {
+      return person.user.username == user.username;
+    });
+
+    if (!userExists) {
+      let person: Person = {
+        user: user,
+        drinks: [drinkName]
+      };
+      this.people.push(person);
+    } else {
+      this.people.forEach(person => {
+        if (person.user.username === user.username) {
+          person.drinks.push(drinkName);
+        }
+      });
+    }
+  }
+
+  private getDrinks(): string {
+    let totalDrinks = this.people.map(person => {
+      if (person.drinks.length === 1) {
+        return `${
+          person.user.username
+        } has had a ${person.drinks[0].toString()}.`.replace(",", "");
+      } else {
+        return `${person.user.username} has had a ${person.drinks.join(
+          ", and a "
+        )}.\n`;
       }
     });
+    return totalDrinks.toString().replace("\n,", "\n");
   }
-};
-
-const getDrinks = () => {
-    let drinks = people.map((person) => {
-        let drinks =  person.drinks.map((drink) => {
-            return ` a ${drink}`
-        })
-        return `${person.user.username} has drank ${drinks} \n`;
-    })
-    return drinks.toString();
+  private cleanup(): void {
+    this.totalDrinks = 0;
+    this.people = [];
+  }
 }
-
-const cleanup = () => {
-  totalDrinks = 0;
-  people = [];
-};
-
-console.log(process.env.CLIENT_ID);
-client.login(process.env.CLIENT_ID);
-
-export default { totalDrinks, people, addDrinkToUser, cleanup, getDrinks };

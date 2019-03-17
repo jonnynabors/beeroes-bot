@@ -1,33 +1,34 @@
 {
   "name": "beeroes-bot",
   "version": "1.0.0",
-  "main": "app.ts",
+  "main": "index.ts",
   "scripts": {
     "test": "jest",
     "bundle:watch": "webpack --watch",
     "server": "nodemon --exec node build/server.ts",
     "start": "concurrently \"yarn run bundle:watch\" \"yarn run server\"",
-    "production": "tsc && node build/app.js"
+    "production": "tsc && node build/index.js"
   },
   "repository": "https://github.com/jonnynabors/beeroes-bot.git",
   "author": "Jonny Nabors <jonnynabors@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@types/chokidar": "^2.1.3",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.11.3",
     "concurrently": "^4.1.0",
     "dblapi.js": "^2.3.0",
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
     "jest": "^24.5.0",
+    "lodash": "^4.17.11",
     "nodemon": "^1.18.10",
     "ts-jest": "^24.0.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.11.3"
+    "@types/lodash": "^4.14.123"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
