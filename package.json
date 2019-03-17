@@ -27,9 +27,8 @@
     "ts-loader": "^5.3.3",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
-  },
-  "devDependencies": {
+    "webpack-cli": "^3.3.0",
     "@types/lodash": "^4.14.123"
-  }
+  },
+  "devDependencies": {}
 }
