@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const { join } = require("path");
 
 module.exports = {
-  entry: "./src/app.ts",
+  entry: "./src/index.ts",
   target: "node",
   mode: "development",
   module: {

@@ -1,7 +1,7 @@
 {
   "name": "beeroes-bot",
   "version": "1.0.0",
-  "main": "app.ts",
+  "main": "index.ts",
   "scripts": {
     "test": "jest",
     "bundle:watch": "webpack --watch",
@@ -28,6 +28,5 @@
     "@types/jest": "^24.0.11",
     "@types/node": "^11.11.3"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

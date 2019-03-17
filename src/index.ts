@@ -1,27 +1,15 @@
-import Discord, { User } from "discord.js";
-import Person from "./models/Person";
-require("dotenv").config();
+// require("dotenv").config();
 
-export class App {
-  client: Discord.Client;
-  public totalDrinks: number;
-  public people: Person[];
+// import Discord, { User } from "discord.js";
+// import Person from "./models/Person";
+// const client = new Discord.Client();
 
-  constructor(client: Discord.Client) {
-    this.client = client;
-    this.totalDrinks = 0;
-    this.people = [];
-  }
+// let totalDrinks: number = 0;
+// let people: Person[] = [];
 
-  public readyHandler() {
-    console.log("I am alive and well!");
-    this.client.login(process.env.CLIENT_ID);
-  }
-
-  // this.client.on("ready", () => {
-  //   console.log("I am alive and well!");
-  // });
-}
+// client.on("ready", () => {
+//   console.log("I am alive and well!");
+// });
 
 // client.on("message", msg => {
 //   if (msg.content.includes("!cheers")) {
@@ -81,3 +69,20 @@ export class App {
 // client.login(process.env.CLIENT_ID);
 
 // export default { totalDrinks, people, addDrinkToUser, cleanup, getDrinks };
+
+import Discord from "discord.js";
+// @ts-ignore
+import { App } from "./app.ts";
+const client = new Discord.Client();
+
+client.login(process.env.CLIENT_ID);
+let app = new App(client);
+app.client.on("ready", () => {
+  app.readyHandler();
+});
+
+app.client.on("message", (msg: Discord.Message) => {
+  if (msg.content === "hello") {
+    msg.channel.send("hi");
+  }
+});
