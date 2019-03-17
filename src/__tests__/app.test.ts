@@ -7,7 +7,7 @@ import {
   Guild
 } from "discord.js";
 import { App } from "../app";
-// TODO: work on tests
+
 describe("Beeroes Bot", () => {
   let testClient: Client;
   let guild: Guild;
@@ -59,14 +59,37 @@ describe("Beeroes Bot", () => {
 
     app.drinkCountHandler(testMessage);
     expect(textChannel.send).toHaveBeenLastCalledWith(
-      "2 drink(s) have been consumed by the server tonight! 🍻🥃"
+      "2 drink(s) have been consumed by the server! 🍻🥃"
     );
   });
 
   it("should emit a message saying the server is sober if nobody has had anything to drink", () => {
     app.whoIsDrunkHandler(testMessage);
     expect(textChannel.send).toHaveBeenCalledWith(
-      "Nobody is drunk because nobody has had anything to drink!"
+      "Nobody is drunk because nobody has had anything to drink! 🏝️"
+    );
+  });
+
+  it("should emit a message saying who has drank what drinks", () => {
+    let firstUser = new User(testClient, {
+      username: "Corrupting"
+    });
+    let secondUser = new User(testClient, {
+      username: "Zeekin"
+    });
+    testMessage.author = firstUser;
+    testMessage.content = "!cheers Lite Beer";
+    app.cheersHandler(testMessage);
+    testMessage.content = "!cheers Vodka Soda";
+    app.cheersHandler(testMessage);
+
+    testMessage.author = secondUser;
+    testMessage.content = "!cheers Whiskey Neat";
+    app.cheersHandler(testMessage);
+
+    app.whoIsDrunkHandler(testMessage);
+    expect(textChannel.send).toHaveBeenLastCalledWith(
+      `Corrupting has had a Lite Beer, and a Vodka Soda.\nZeekin has had a Whiskey Neat.`
     );
   });
 });
