@@ -85,4 +85,8 @@ app.client.on("message", (msg: Discord.Message) => {
   if (msg.content.includes("!cheers")) {
     app.cheersHandler(msg);
   }
+
+  if (msg.content === "!drinks") {
+    app.drinkCountHandler(msg);
+  }
 });

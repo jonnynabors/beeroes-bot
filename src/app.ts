@@ -18,12 +18,25 @@ export class App {
   }
 
   public cheersHandler(message: Discord.Message) {
+    this.totalDrinks++;
     message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
   }
 
-  // this.client.on("ready", () => {
-  //   console.log("I am alive and well!");
-  // });
+  public drinkCountHandler(message: Discord.Message) {
+    message.channel.send(
+      `${
+        this.totalDrinks
+      } drink(s) have been consumed by the server tonight! 🍻🥃`
+    );
+  }
+
+  public whoIsDrunkHandler(message: Discord.Message) {
+    if (this.people.length === 0) {
+      message.channel.send(
+        "Nobody is drunk because nobody has had anything to drink!"
+      );
+    }
+  }
 }
 
 // client.on("message", msg => {
@@ -31,10 +44,6 @@ export class App {
 //     let drinkName = msg.content.replace("!cheers", "").trimLeft();
 //     addDrinkToUser(msg.author, drinkName);
 //     totalDrinks++;
-//   }
-
-//   if (msg.content === "!beers") {
-//     msg.channel.send(`${totalDrinks} beer(s) have been drunk tonight! 🍺`);
 //   }
 
 //   if (msg.content === "!whosdrunk") {
