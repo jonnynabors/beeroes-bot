@@ -15,7 +15,10 @@ export class App {
 
   public readyHandler() {
     console.log("I am alive and well!");
-    this.client.login(process.env.CLIENT_ID);
+  }
+
+  public cheersHandler(message: Discord.Message) {
+    message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
   }
 
   // this.client.on("ready", () => {

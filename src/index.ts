@@ -82,7 +82,7 @@ app.client.on("ready", () => {
 });
 
 app.client.on("message", (msg: Discord.Message) => {
-  if (msg.content === "hello") {
-    msg.channel.send("hi");
+  if (msg.content.includes("!cheers")) {
+    app.cheersHandler(msg);
   }
 });
