@@ -23,7 +23,7 @@ app.client.on("message", (msg: Discord.Message) => {
     app.whoIsDrunkHandler(msg);
   }
 
-  if (msg.content === "!beeroes-clear") {
-    app.resetBotHandler();
+  if (msg.content === "!closingtime") {
+    app.resetBotHandler(msg);
   }
 });

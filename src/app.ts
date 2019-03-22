@@ -41,7 +41,10 @@ export class App {
     }
   }
 
-  public resetBotHandler() {
+  public resetBotHandler(message: Discord.Message) {
+    message.channel.send(
+      "All drinks have been cleared. Thanks for drinking with me! 🥃"
+    );
     this.cleanup();
   }
 

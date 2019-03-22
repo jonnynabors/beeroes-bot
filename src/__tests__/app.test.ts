@@ -92,4 +92,12 @@ describe("Beeroes Bot", () => {
       `Corrupting has had a Lite Beer, and a Vodka Soda.\nZeekin has had a Whiskey Neat.`
     );
   });
+
+  it("should emit a message notifying the drinks have been cleared", () => {
+    testMessage.content = "!closingtime";
+    app.resetBotHandler(testMessage);
+    expect(textChannel.send).toHaveBeenCalledWith(
+      "All drinks have been cleared. Thanks for drinking with me! 🥃"
+    );
+  });
 });

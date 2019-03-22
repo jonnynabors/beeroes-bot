@@ -14,6 +14,6 @@ How many total drinks have been had
 
 Lists how many drinks each participant has had
 
-### !beeroes-clear
+### !closingtime
 
 Clears the drink list

@@ -3,3 +3,4 @@ build
 yarn-error*
 .history/
 .env
+coverage/
