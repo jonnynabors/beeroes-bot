@@ -1,7 +1,7 @@
 import Discord from "discord.js";
-// import { App } from "./app";
+import { App } from "./app";
 // when running locally, comment the above and uncomment the below
-import { App } from "./app.ts";
+// import { App } from "./app.ts";
 const client = new Discord.Client();
 
 client.login(process.env.CLIENT_ID);
