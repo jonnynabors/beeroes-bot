@@ -85,7 +85,18 @@ describe("Beeroes Bot", () => {
     testMessage.content = "dc!cheers Lite Beer";
     app.cheersHandler(testMessage);
 
+    app.whoIsDrunkHandler(testMessage);
+    expect(textChannel.send).toHaveBeenLastCalledWith(
+      `Corrupting has had 2 Lite Beers.\n`
+    );
+
     testMessage.content = "dc!cheers Vodka Soda";
+    app.cheersHandler(testMessage);
+
+    testMessage.content = "dc!cheers Craft Beer";
+    app.cheersHandler(testMessage);
+
+    testMessage.content = "dc!cheers Craft Beer";
     app.cheersHandler(testMessage);
 
     testMessage.author = secondUser;
@@ -94,7 +105,7 @@ describe("Beeroes Bot", () => {
 
     app.whoIsDrunkHandler(testMessage);
     expect(textChannel.send).toHaveBeenLastCalledWith(
-      `Corrupting has had 2 Lite Beers, and a Vodka Soda.\nZeekin has had a Whiskey Neat.`
+      `Corrupting has had 2 Craft Beers, 2 Lite Beers, and a Vodka Soda.\nZeekin has had a Whiskey Neat.\n`
     );
   });
 
@@ -121,7 +132,7 @@ describe("Beeroes Bot", () => {
 
     app.whoIsDrunkHandler(testMessage);
     expect(textChannel.send).toHaveBeenLastCalledWith(
-      `Corrupting has had a Lite Beer.\nZeekin has had 2 Whiskey Neats, and a Coors Light.`
+      `Corrupting has had a Lite Beer.\nZeekin has had 2 Whiskey Neats, and a Coors Light.\n`
     );
   });
 

@@ -3,8 +3,8 @@
 ## Features
 
 ~~- Show notification when cheers is successful~~
+~~- Better text formatting~~
 
-- Better text formatting
 - Clinking glass audio
 
 ## Development Tasks

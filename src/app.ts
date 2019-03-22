@@ -67,37 +67,43 @@ export class App {
   }
 
   private addDrinkToUser(user: User, drinkName: string) {
-    let userExists = this.people.some(person => {
-      return person.user.username == user.username;
-    });
-
-    if (!userExists) {
-      let person: Person = {
-        user: user,
-        drinks: [
-          {
-            name: drinkName,
-            quantity: 1
-          }
-        ]
-      };
-      this.people.push(person);
+    let person: Person | undefined = _.find(
+      this.people,
+      (person: Person) => person.user.username === user.username
+    );
+    if (!person) {
+      this.createNewPersonWithDrink(user, drinkName);
     } else {
-      this.people.forEach(person => {
-        if (person.user.username === user.username) {
-          person.drinks.forEach((drink, index) => {
-            if (drink.name === drinkName) {
-              person.drinks[index].quantity++;
-            } else {
-              person.drinks.push({
-                name: drinkName,
-                quantity: 1
-              });
-            }
-          });
-        }
-      });
+      let existingDrink = _.find(
+        person.drinks,
+        (drink: Drink) => drink.name === drinkName
+      );
+
+      if (existingDrink) {
+        existingDrink.quantity++;
+      } else {
+        person.drinks.push({
+          name: drinkName,
+          quantity: 1
+        });
+      }
+      person.drinks = _.reverse(
+        _.sortBy(person.drinks, (drink: Drink) => drink.quantity)
+      );
     }
+  }
+
+  private createNewPersonWithDrink(user: Discord.User, drinkName: string) {
+    let person: Person = {
+      user: user,
+      drinks: [
+        {
+          name: drinkName,
+          quantity: 1
+        }
+      ]
+    };
+    this.people.push(person);
   }
 
   private getDrinks(): string {
@@ -105,29 +111,29 @@ export class App {
       if (person.drinks.length === 1) {
         return this.singleDrinkMessage(person);
       } else {
-        return `${person.user.username} has had ${this.multiDrinkMessage(
+        return `${person.user.username} has had${this.multiDrinkMessage(
           person.drinks
         )}`;
       }
     });
-    return totalDrinks.toString().replace("\n,", "\n");
+    return _.join(totalDrinks, "");
   }
 
   private singleDrinkMessage(person: Person): string {
     return `${
       person.user.username
-    } has had a ${person.drinks[0].name.toString()}.`.replace(",", "");
+    } has had a ${person.drinks[0].name.toString()}.\n`;
   }
 
   private multiDrinkMessage(drinks: Drink[]): string {
-    let msg = drinks.map((drink, index) => {
+    let msg = drinks.map(drink => {
       if (drink.quantity === 1) {
-        return `a ${drink.name}`;
+        return ` and a ${drink.name}`;
       } else {
-        return `${drink.quantity} ${drink.name}s`;
+        return ` ${drink.quantity} ${drink.name}s,`;
       }
     });
-    return `${msg.toString().replace(",", ", and ")}.\n`;
+    return `${msg.join("").toString()}.\n`;
   }
 
   private cleanup(): void {
