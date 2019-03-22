@@ -1,4 +1,4 @@
-import Discord, { User } from "discord.js";
+import Discord, { User, MessageEmbed, RichEmbed } from "discord.js";
 import Person from "./models/Person";
 import * as _ from "lodash";
 require("dotenv").config();
@@ -19,7 +19,7 @@ export class App {
   }
 
   public cheersHandler(message: Discord.Message) {
-    let drinkName = message.content.replace("!cheers", "").trimLeft();
+    let drinkName = message.content.replace("dc!cheers", "").trimLeft();
     this.addDrinkToUser(message.author, drinkName);
     this.totalDrinks++;
     message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
@@ -46,6 +46,22 @@ export class App {
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
     this.cleanup();
+  }
+
+  public helpHandler(message: Discord.Message) {
+    let commands = `
+      How to use Drunkcord! \n
+      \`dc!cheers <drink_name>\` will add a drink\n
+      \`dc!drinks\` will show how many total drinks have been drank\n
+      \`dc!drunk\` will show who's drunk\n
+      \`dc!closingtime\` will reset the drinks
+    `;
+    let embed = new RichEmbed()
+      .setTitle("Drunkcord Help")
+      .setColor(0xff0000)
+      .setThumbnail("https://i.imgur.com/gaf3cVL.png")
+      .setDescription(commands);
+    message.channel.send(embed);
   }
 
   private addDrinkToUser(user: User, drinkName: string) {

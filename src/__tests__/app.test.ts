@@ -1,10 +1,10 @@
 import {
   User,
   Client,
-  DiscordAPIError,
   Message,
   TextChannel,
-  Guild
+  Guild,
+  RichEmbed
 } from "discord.js";
 import { App } from "../app";
 
@@ -43,7 +43,7 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit a cheers emoji when the cheers handler is called", () => {
-    testMessage.content = "!cheers";
+    testMessage.content = "dc!cheers";
     app.cheersHandler(testMessage);
 
     expect(textChannel.send).toHaveBeenCalledWith(
@@ -52,9 +52,9 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit the amount of beers drank by the server", () => {
-    testMessage.content = "!cheers a beer";
+    testMessage.content = "dc!cheers a beer";
     app.cheersHandler(testMessage);
-    testMessage.content = "!cheers a vodka";
+    testMessage.content = "dc!cheers a vodka";
     app.cheersHandler(testMessage);
 
     app.drinkCountHandler(testMessage);
@@ -78,13 +78,13 @@ describe("Beeroes Bot", () => {
       username: "Zeekin"
     });
     testMessage.author = firstUser;
-    testMessage.content = "!cheers Lite Beer";
+    testMessage.content = "dc!cheers Lite Beer";
     app.cheersHandler(testMessage);
-    testMessage.content = "!cheers Vodka Soda";
+    testMessage.content = "dc!cheers Vodka Soda";
     app.cheersHandler(testMessage);
 
     testMessage.author = secondUser;
-    testMessage.content = "!cheers Whiskey Neat";
+    testMessage.content = "dc!cheers Whiskey Neat";
     app.cheersHandler(testMessage);
 
     app.whoIsDrunkHandler(testMessage);
@@ -94,10 +94,28 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit a message notifying the drinks have been cleared", () => {
-    testMessage.content = "!closingtime";
+    testMessage.content = "dc!closingtime";
     app.resetBotHandler(testMessage);
     expect(textChannel.send).toHaveBeenCalledWith(
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
+  });
+
+  it("should emit help commands when asked politely", () => {
+    testMessage.content = "dc!help";
+    app.helpHandler(testMessage);
+    let commands = `
+      How to use Drunkcord! \n
+      \`dc!cheers <drink_name>\` will add a drink\n
+      \`dc!drinks\` will show how many total drinks have been drank\n
+      \`dc!drunk\` will show who's drunk\n
+      \`dc!closingtime\` will reset the drinks
+    `;
+    let embed = new RichEmbed()
+      .setTitle("Drunkcord Help")
+      .setColor(0xff0000)
+      .setThumbnail("https://i.imgur.com/gaf3cVL.png")
+      .setDescription(commands);
+    expect(textChannel.send).toHaveBeenCalledWith(embed);
   });
 });

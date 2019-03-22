@@ -2,18 +2,18 @@
 
 A Discord Bot to keep track of who is drinking in the Discord Server!
 
-### !cheers {drink name}
+### dc!cheers {drink name}
 
 Adds the drink you are currently drinking
 
-### !drinks
+### dc!drinks
 
 How many total drinks have been had
 
-### !whosdrunk
+### dc!drunk
 
 Lists how many drinks each participant has had
 
-### !closingtime
+### dc!closingtime
 
 Clears the drink list

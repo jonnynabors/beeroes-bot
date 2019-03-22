@@ -1,7 +1,7 @@
 import Discord from "discord.js";
-import { App } from "./app";
+// import { App } from "./app";
 // when running locally, comment the above and uncomment the below
-// import { App } from "./app.ts";
+import { App } from "./app.ts";
 const client = new Discord.Client();
 
 client.login(process.env.CLIENT_ID);
@@ -11,19 +11,24 @@ app.client.on("ready", () => {
 });
 
 app.client.on("message", (msg: Discord.Message) => {
-  if (msg.content.includes("!cheers")) {
+  msg.cleanContent;
+  if (msg.content.includes("dc!cheers")) {
     app.cheersHandler(msg);
   }
 
-  if (msg.content === "!drinks") {
+  if (msg.content === "dc!drinks") {
     app.drinkCountHandler(msg);
   }
 
-  if (msg.content === "!whosdrunk") {
+  if (msg.content === "dc!drunk") {
     app.whoIsDrunkHandler(msg);
   }
 
-  if (msg.content === "!closingtime") {
+  if (msg.content === "dc!closingtime") {
     app.resetBotHandler(msg);
+  }
+
+  if (msg.content === "dc!help") {
+    app.helpHandler(msg);
   }
 });
