@@ -1,6 +1,7 @@
 import Discord, { User, MessageEmbed, RichEmbed } from "discord.js";
 import Person from "./models/Person";
 import * as _ from "lodash";
+import Drink from "./models/Drink";
 require("dotenv").config();
 
 export class App {
@@ -49,6 +50,7 @@ export class App {
   }
 
   public helpHandler(message: Discord.Message) {
+    // TODO: Make this a constant
     let commands = `
       How to use Drunkcord! \n
       \`dc!cheers <drink_name>\` will add a drink\n
@@ -72,13 +74,27 @@ export class App {
     if (!userExists) {
       let person: Person = {
         user: user,
-        drinks: [drinkName]
+        drinks: [
+          {
+            name: drinkName,
+            quantity: 1
+          }
+        ]
       };
       this.people.push(person);
     } else {
       this.people.forEach(person => {
         if (person.user.username === user.username) {
-          person.drinks.push(drinkName);
+          person.drinks.forEach((drink, index) => {
+            if (drink.name === drinkName) {
+              person.drinks[index].quantity++;
+            } else {
+              person.drinks.push({
+                name: drinkName,
+                quantity: 1
+              });
+            }
+          });
         }
       });
     }
@@ -87,17 +103,33 @@ export class App {
   private getDrinks(): string {
     let totalDrinks = this.people.map(person => {
       if (person.drinks.length === 1) {
-        return `${
-          person.user.username
-        } has had a ${person.drinks[0].toString()}.`.replace(",", "");
+        return this.singleDrinkMessage(person);
       } else {
-        return `${person.user.username} has had a ${person.drinks.join(
-          ", and a "
-        )}.\n`;
+        return `${person.user.username} has had ${this.multiDrinkMessage(
+          person.drinks
+        )}`;
       }
     });
     return totalDrinks.toString().replace("\n,", "\n");
   }
+
+  private singleDrinkMessage(person: Person): string {
+    return `${
+      person.user.username
+    } has had a ${person.drinks[0].name.toString()}.`.replace(",", "");
+  }
+
+  private multiDrinkMessage(drinks: Drink[]): string {
+    let msg = drinks.map((drink, index) => {
+      if (drink.quantity === 1) {
+        return `a ${drink.name}`;
+      } else {
+        return `${drink.quantity} ${drink.name}s`;
+      }
+    });
+    return `${msg.toString().replace(",", ", and ")}.\n`;
+  }
+
   private cleanup(): void {
     this.totalDrinks = 0;
     this.people = [];

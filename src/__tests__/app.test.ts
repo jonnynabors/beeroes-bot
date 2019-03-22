@@ -70,7 +70,7 @@ describe("Beeroes Bot", () => {
     );
   });
 
-  it("should emit a message saying who has drank what drinks", () => {
+  it("should correctly format multiple drinks starting with multiple", () => {
     let firstUser = new User(testClient, {
       username: "Corrupting"
     });
@@ -80,6 +80,11 @@ describe("Beeroes Bot", () => {
     testMessage.author = firstUser;
     testMessage.content = "dc!cheers Lite Beer";
     app.cheersHandler(testMessage);
+
+    testMessage.author = firstUser;
+    testMessage.content = "dc!cheers Lite Beer";
+    app.cheersHandler(testMessage);
+
     testMessage.content = "dc!cheers Vodka Soda";
     app.cheersHandler(testMessage);
 
@@ -89,7 +94,34 @@ describe("Beeroes Bot", () => {
 
     app.whoIsDrunkHandler(testMessage);
     expect(textChannel.send).toHaveBeenLastCalledWith(
-      `Corrupting has had a Lite Beer, and a Vodka Soda.\nZeekin has had a Whiskey Neat.`
+      `Corrupting has had 2 Lite Beers, and a Vodka Soda.\nZeekin has had a Whiskey Neat.`
+    );
+  });
+
+  it("should correctly format multiple drinks starting with single", () => {
+    let firstUser = new User(testClient, {
+      username: "Corrupting"
+    });
+    let secondUser = new User(testClient, {
+      username: "Zeekin"
+    });
+    testMessage.author = firstUser;
+    testMessage.content = "dc!cheers Lite Beer";
+    app.cheersHandler(testMessage);
+
+    testMessage.author = secondUser;
+    testMessage.content = "dc!cheers Whiskey Neat";
+    app.cheersHandler(testMessage);
+
+    testMessage.content = "dc!cheers Coors Light";
+    app.cheersHandler(testMessage);
+
+    testMessage.content = "dc!cheers Whiskey Neat";
+    app.cheersHandler(testMessage);
+
+    app.whoIsDrunkHandler(testMessage);
+    expect(textChannel.send).toHaveBeenLastCalledWith(
+      `Corrupting has had a Lite Beer.\nZeekin has had 2 Whiskey Neats, and a Coors Light.`
     );
   });
 
