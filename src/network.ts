@@ -1,4 +1,5 @@
 import { Client } from "pg";
+import { Message } from "discord.js";
 
 const initializeDatabase = (client: Client) => {
   client.query(
@@ -15,4 +16,30 @@ const initializeDatabase = (client: Client) => {
   );
 };
 
-export { initializeDatabase };
+const addDrink = (client: Client, message: Message, drinkName: string) => {
+  client.query(
+    `
+            INSERT INTO drinks (username, guild, drinkname, active) 
+            values ('${message.author.id}', '${
+      message.guild.id
+    }', '${drinkName}', true)
+        `,
+    (err, res) => {
+      console.log(err, res);
+    }
+  );
+};
+
+const getDrinkCount = async (client: Client, message: Message) => {
+  const response = await client.query({
+    rowMode: "array",
+    text: `
+        SELECT * FROM drinks where guild = '${
+          message.guild.id
+        }' and active = true
+        `
+  });
+  return response.rowCount;
+};
+
+export { initializeDatabase, addDrink, getDrinkCount };

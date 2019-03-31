@@ -3,13 +3,12 @@ import Person from "./models/Person";
 import * as _ from "lodash";
 import Drink from "./models/Drink";
 import { Client } from "pg";
-import { initializeDatabase } from "./network";
+import { initializeDatabase, addDrink, getDrinkCount } from "./network";
 require("dotenv").config();
 
 export class App {
   client: Discord.Client;
   pgClient: Client;
-  public totalDrinks: number;
   public people: Person[];
 
   constructor(client: Discord.Client, pgClient: Client) {
@@ -26,14 +25,16 @@ export class App {
 
   public cheersHandler(message: Discord.Message) {
     let drinkName = message.content.replace("dc!cheers", "").trimLeft();
-    this.addDrinkToUser(message.author, drinkName);
-    this.totalDrinks++;
+
+    addDrink(this.pgClient, message, drinkName);
+
     message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
   }
 
-  public drinkCountHandler(message: Discord.Message) {
+  public async drinkCountHandler(message: Discord.Message) {
+    const drinkCount = await getDrinkCount(this.pgClient, message);
     message.channel.send(
-      `${this.totalDrinks} drink(s) have been consumed by the server! 🍻🥃`
+      `${drinkCount} drink(s) have been consumed by the server! 🍻🥃`
     );
   }
 
@@ -142,7 +143,6 @@ export class App {
   }
 
   private cleanup(): void {
-    this.totalDrinks = 0;
     this.people = [];
   }
 }
