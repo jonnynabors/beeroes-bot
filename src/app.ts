@@ -3,7 +3,12 @@ import Person from "./models/Person";
 import * as _ from "lodash";
 import Drink from "./models/Drink";
 import { Client } from "pg";
-import { initializeDatabase, addDrink, getDrinkCount } from "./network";
+import {
+  initializeDatabase,
+  addDrink,
+  getDrinkCount,
+  getDrinksForGuild
+} from "./network";
 require("dotenv").config();
 
 export class App {
@@ -14,7 +19,6 @@ export class App {
   constructor(client: Discord.Client, pgClient: Client) {
     this.client = client;
     this.pgClient = pgClient;
-    this.totalDrinks = 0;
     this.people = [];
   }
 
@@ -38,13 +42,15 @@ export class App {
     );
   }
 
-  public whoIsDrunkHandler(message: Discord.Message) {
-    if (this.people.length === 0) {
+  public async whoIsDrunkHandler(message: Discord.Message) {
+    const people = await getDrinksForGuild(this.pgClient, message);
+    console.log(people);
+    if (people.length === 0) {
       message.channel.send(
         "Nobody is drunk because nobody has had anything to drink! 🏝️"
       );
     } else {
-      message.channel.send(this.getDrinks());
+      // message.channel.send(this.getDrinks());
     }
   }
 

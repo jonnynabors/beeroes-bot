@@ -20,7 +20,7 @@ const addDrink = (client: Client, message: Message, drinkName: string) => {
   client.query(
     `
             INSERT INTO drinks (username, guild, drinkname, active) 
-            values ('${message.author.id}', '${
+            values ('${message.author.username}', '${
       message.guild.id
     }', '${drinkName}', true)
         `,
@@ -42,4 +42,30 @@ const getDrinkCount = async (client: Client, message: Message) => {
   return response.rowCount;
 };
 
-export { initializeDatabase, addDrink, getDrinkCount };
+export interface Thing {
+  username: string;
+  drinkname: string;
+}
+
+const getDrinksForGuild = async (client: Client, message: Message) => {
+  const response = await client.query({
+    rowMode: "array",
+    text: `
+            SELECT * FROM drinks where guild = '${
+              message.guild.id
+            }' and active = true
+            `
+  });
+
+  let things: Thing[] = [];
+
+  response.rows.forEach(row => {
+    things.push({
+      username: row[1],
+      drinkname: row[3]
+    });
+  });
+  return things;
+};
+
+export { initializeDatabase, addDrink, getDrinkCount, getDrinksForGuild };
