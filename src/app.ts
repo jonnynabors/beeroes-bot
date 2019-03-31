@@ -2,21 +2,36 @@ import Discord, { User, MessageEmbed, RichEmbed } from "discord.js";
 import Person from "./models/Person";
 import * as _ from "lodash";
 import Drink from "./models/Drink";
+import { Client } from "pg";
 require("dotenv").config();
 
 export class App {
   client: Discord.Client;
+  pgClient: Client;
   public totalDrinks: number;
   public people: Person[];
 
-  constructor(client: Discord.Client) {
+  constructor(client: Discord.Client, pgClient: Client) {
     this.client = client;
+    this.pgClient = pgClient;
     this.totalDrinks = 0;
     this.people = [];
   }
 
   public readyHandler() {
     console.log("I am alive and well!");
+    this.pgClient.query(
+      `CREATE TABLE IF NOT EXISTS drinks (
+            "id" SERIAL primary key, 
+            "username" varchar(450) NOT NULL,  
+            "guild" varchar(450) NOT NULL,
+            "drinkname" varchar (100) NOT NULL,
+            "active" boolean
+          )`,
+      (err, res) => {
+        if (err) console.log(err);
+      }
+    );
   }
 
   public cheersHandler(message: Discord.Message) {

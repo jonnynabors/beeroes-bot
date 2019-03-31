@@ -1,11 +1,17 @@
 import Discord from "discord.js";
+import { Client } from "pg";
 // import { App } from "./app";
 // when running locally, comment the above and uncomment the below
 import { App } from "./app.ts";
 const client = new Discord.Client();
 
+const pgClient = new Client({
+  connectionString: "postgres://jnabors:password@127.0.0.1:5432/jnabors"
+});
+pgClient.connect();
+
 client.login(process.env.CLIENT_ID);
-let app = new App(client);
+let app = new App(client, pgClient);
 app.client.on("ready", () => {
   app.readyHandler();
 });
