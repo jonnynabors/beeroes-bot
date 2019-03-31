@@ -14,3 +14,6 @@
 - Test out CI/CD with Dev & Prod
 - Hook up w/ Untappd API
 - Set up git releases for production builds (maybe notify in Discord channel when an update happens!)
+
+New MongoDB Connection Info:
+mongodb+srv://druncord-dev:<password>@drunkcord-y3e0s.mongodb.net/test?retryWrites=true
