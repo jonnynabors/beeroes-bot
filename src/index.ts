@@ -1,8 +1,6 @@
 import Discord from "discord.js";
 import { Client } from "pg";
-// import { App } from "./app";
-// when running locally, comment the above and uncomment the below
-import { App } from "./app.ts";
+import { App } from "./app";
 const client = new Discord.Client();
 
 const pgClient = new Client({

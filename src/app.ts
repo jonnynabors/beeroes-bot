@@ -3,6 +3,7 @@ import Person from "./models/Person";
 import * as _ from "lodash";
 import Drink from "./models/Drink";
 import { Client } from "pg";
+import { initializeDatabase } from "./network";
 require("dotenv").config();
 
 export class App {
@@ -20,18 +21,7 @@ export class App {
 
   public readyHandler() {
     console.log("I am alive and well!");
-    this.pgClient.query(
-      `CREATE TABLE IF NOT EXISTS drinks (
-            "id" SERIAL primary key, 
-            "username" varchar(450) NOT NULL,  
-            "guild" varchar(450) NOT NULL,
-            "drinkname" varchar (100) NOT NULL,
-            "active" boolean
-          )`,
-      (err, res) => {
-        if (err) console.log(err);
-      }
-    );
+    initializeDatabase(this.pgClient);
   }
 
   public cheersHandler(message: Discord.Message) {
