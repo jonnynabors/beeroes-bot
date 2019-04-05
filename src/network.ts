@@ -1,5 +1,6 @@
 import { Client } from "pg";
 import { Message } from "discord.js";
+import * as _ from "lodash";
 
 const initializeDatabase = (client: Client) => {
   client.query(

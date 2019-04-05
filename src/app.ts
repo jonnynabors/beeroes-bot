@@ -44,7 +44,11 @@ export class App {
 
   public async whoIsDrunkHandler(message: Discord.Message) {
     const people = await getDrinksForGuild(this.pgClient, message);
-    console.log(people);
+    const newLocal = _.groupBy(people, "username");
+    // @ts-ignore
+    console.log(newLocal);
+    // console.log(Object.keys(newLocal));
+
     if (people.length === 0) {
       message.channel.send(
         "Nobody is drunk because nobody has had anything to drink! 🏝️"
@@ -76,6 +80,16 @@ export class App {
       .setThumbnail("https://i.imgur.com/gaf3cVL.png")
       .setDescription(commands);
     message.channel.send(embed);
+  }
+
+  public messageFormatter(drinkData: any) {
+    let msg = "";
+    for (var key in drinkData) {
+      console.log(key);
+      console.log(_.orderBy(drinkData[key], "drinkname"));
+      msg += `${key} has had`;
+    }
+    return msg;
   }
 
   private addDrinkToUser(user: User, drinkName: string) {

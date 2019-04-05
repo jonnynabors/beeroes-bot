@@ -17,7 +17,8 @@ describe("Beeroes Bot", () => {
 
   beforeEach(() => {
     testClient = new Client();
-    app = new App(testClient);
+    // @ts-ignore
+    app = new App(testClient, {});
     guild = new Guild(testClient, {
       emojis: []
     });
@@ -160,5 +161,21 @@ describe("Beeroes Bot", () => {
       .setThumbnail("https://i.imgur.com/gaf3cVL.png")
       .setDescription(commands);
     expect(textChannel.send).toHaveBeenCalledWith(embed);
+  });
+
+  it.only("should correctly format drinks", () => {
+    const testData = {
+      Corrupting: [
+        { username: "Corrupting", drinkname: "Bud Light" },
+        { username: "Corrupting", drinkname: "Whiskey" },
+        { username: "Corrupting", drinkname: "Bud Light" }
+      ],
+      Giantjimmy: [{ username: "226128681326739456", drinkname: "Bud Light" }]
+    };
+
+    expect(app.messageFormatter(testData)).toEqual(
+      `Corrupting has had 2 Bud Lights and a Whiskey.\n
+      Giantjimmy has had a Bud Light.`
+    );
   });
 });
