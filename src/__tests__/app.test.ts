@@ -17,7 +17,8 @@ describe("Beeroes Bot", () => {
 
   beforeEach(() => {
     testClient = new Client();
-    app = new App(testClient);
+    // @ts-ignore
+    app = new App(testClient, {});
     guild = new Guild(testClient, {
       emojis: []
     });
@@ -70,29 +71,6 @@ describe("Beeroes Bot", () => {
     );
   });
 
-  it("should emit a message saying who has drank what drinks", () => {
-    let firstUser = new User(testClient, {
-      username: "Corrupting"
-    });
-    let secondUser = new User(testClient, {
-      username: "Zeekin"
-    });
-    testMessage.author = firstUser;
-    testMessage.content = "dc!cheers Lite Beer";
-    app.cheersHandler(testMessage);
-    testMessage.content = "dc!cheers Vodka Soda";
-    app.cheersHandler(testMessage);
-
-    testMessage.author = secondUser;
-    testMessage.content = "dc!cheers Whiskey Neat";
-    app.cheersHandler(testMessage);
-
-    app.whoIsDrunkHandler(testMessage);
-    expect(textChannel.send).toHaveBeenLastCalledWith(
-      `Corrupting has had a Lite Beer, and a Vodka Soda.\nZeekin has had a Whiskey Neat.`
-    );
-  });
-
   it("should emit a message notifying the drinks have been cleared", () => {
     testMessage.content = "dc!closingtime";
     app.resetBotHandler(testMessage);
@@ -117,5 +95,32 @@ describe("Beeroes Bot", () => {
       .setThumbnail("https://i.imgur.com/gaf3cVL.png")
       .setDescription(commands);
     expect(textChannel.send).toHaveBeenCalledWith(embed);
+  });
+
+  it.only("should correctly format drinks", () => {
+    const testData = {
+      Corrupting: [
+        { username: "Corrupting", drinkname: "Bud Light" },
+        { username: "Corrupting", drinkname: "Whiskey" },
+        { username: "Corrupting", drinkname: "Bud Light" }
+      ],
+      Deathspacito: [
+        { username: "Corrupting", drinkname: "Bud Light" },
+        { username: "Corrupting", drinkname: "Whiskey" }
+      ],
+      Giantjimmy: [{ username: "Giantjimmy", drinkname: "Bud Light" }],
+      Cathedrals: [
+        { username: "Cathedrals", drinkname: "Miller Light" },
+        { username: "Cathedrals", drinkname: "Bud Light" },
+        { username: "Cathedrals", drinkname: "Miller Light" },
+        { username: "Cathedrals", drinkname: "Bud Light" },
+        { username: "Cathedrals", drinkname: "Bud Light" },
+        { username: "Cathedrals", drinkname: "Blue Moon" }
+      ]
+    };
+
+    expect(app.messageFormatter(testData)).toEqual(
+      `Corrupting has had 2 Bud Lights, and a Whiskey.\nDeathspacito has had a Bud Light, and a Whiskey.\nGiantjimmy has had a Bud Light.\nCathedrals has had 2 Miller Lights, and 3 Bud Lights, and a Blue Moon.\n`
+    );
   });
 });

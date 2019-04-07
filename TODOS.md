@@ -3,13 +3,14 @@
 ## Features
 
 ~~- Show notification when cheers is successful~~
+~~- Better text formatting~~
 
-- Better text formatting
 - Clinking glass audio
 
 ## Development Tasks
 
-- Add persistent data storage (MLab)
+~~- Add persistent data storage (MLab)~~
+
 - Have tests run in CI/CD
 - Test out CI/CD with Dev & Prod
 - Hook up w/ Untappd API

@@ -4,3 +4,4 @@ yarn-error*
 .history/
 .env
 coverage/
+.DS_STORE

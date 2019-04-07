@@ -1,54 +1,65 @@
-import Discord, { User, MessageEmbed, RichEmbed } from "discord.js";
-import Person from "./models/Person";
+import Discord, { RichEmbed } from "discord.js";
 import * as _ from "lodash";
+import { Client } from "pg";
+import {
+  initializeDatabase,
+  addDrink,
+  getDrinkCount,
+  getDrinksForGuild,
+  clearDrinksForGuild
+} from "./network";
 require("dotenv").config();
 
 export class App {
   client: Discord.Client;
-  public totalDrinks: number;
-  public people: Person[];
+  pgClient: Client;
 
-  constructor(client: Discord.Client) {
+  constructor(client: Discord.Client, pgClient: Client) {
     this.client = client;
-    this.totalDrinks = 0;
-    this.people = [];
+    this.pgClient = pgClient;
   }
 
   public readyHandler() {
     console.log("I am alive and well!");
+    initializeDatabase(this.pgClient);
   }
 
   public cheersHandler(message: Discord.Message) {
     let drinkName = message.content.replace("dc!cheers", "").trimLeft();
-    this.addDrinkToUser(message.author, drinkName);
-    this.totalDrinks++;
+
+    addDrink(this.pgClient, message, drinkName);
+
     message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
   }
 
-  public drinkCountHandler(message: Discord.Message) {
+  public async drinkCountHandler(message: Discord.Message) {
+    const drinkCount = await getDrinkCount(this.pgClient, message);
     message.channel.send(
-      `${this.totalDrinks} drink(s) have been consumed by the server! 🍻🥃`
+      `${drinkCount} drink(s) have been consumed by the server! 🍻🥃`
     );
   }
 
-  public whoIsDrunkHandler(message: Discord.Message) {
-    if (this.people.length === 0) {
+  public async whoIsDrunkHandler(message: Discord.Message) {
+    const people = await getDrinksForGuild(this.pgClient, message);
+    const drinksByUserName = _.groupBy(people, "username");
+    if (people.length === 0) {
       message.channel.send(
         "Nobody is drunk because nobody has had anything to drink! 🏝️"
       );
     } else {
-      message.channel.send(this.getDrinks());
+      message.channel.send(this.messageFormatter(drinksByUserName));
     }
   }
 
-  public resetBotHandler(message: Discord.Message) {
+  public async resetBotHandler(message: Discord.Message) {
+    await clearDrinksForGuild(this.pgClient, message);
     message.channel.send(
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
-    this.cleanup();
   }
 
   public helpHandler(message: Discord.Message) {
+    // TODO: Make this a constant
     let commands = `
       How to use Drunkcord! \n
       \`dc!cheers <drink_name>\` will add a drink\n
@@ -64,42 +75,30 @@ export class App {
     message.channel.send(embed);
   }
 
-  private addDrinkToUser(user: User, drinkName: string) {
-    let userExists = this.people.some(person => {
-      return person.user.username == user.username;
-    });
-
-    if (!userExists) {
-      let person: Person = {
-        user: user,
-        drinks: [drinkName]
-      };
-      this.people.push(person);
-    } else {
-      this.people.forEach(person => {
-        if (person.user.username === user.username) {
-          person.drinks.push(drinkName);
+  // TODO: Move this into a class, improve the text formatting
+  public messageFormatter(drinkData: any) {
+    let msg = "";
+    for (var key in drinkData) {
+      var drinkCounts = _.countBy(drinkData[key], "drinkname");
+      msg += `${key} has had `;
+      let idx = 1;
+      for (var key in drinkCounts) {
+        if (drinkCounts.length === 1) {
+          msg += `a ${key}`;
+        } else {
+          if (drinkCounts[key] === 1) {
+            msg += `a ${key}`;
+          } else {
+            msg += `${drinkCounts[key]} ${key}s`;
+          }
+          if (idx < _.size(drinkCounts)) {
+            msg += `, and `;
+          }
         }
-      });
-    }
-  }
-
-  private getDrinks(): string {
-    let totalDrinks = this.people.map(person => {
-      if (person.drinks.length === 1) {
-        return `${
-          person.user.username
-        } has had a ${person.drinks[0].toString()}.`.replace(",", "");
-      } else {
-        return `${person.user.username} has had a ${person.drinks.join(
-          ", and a "
-        )}.\n`;
+        idx++;
       }
-    });
-    return totalDrinks.toString().replace("\n,", "\n");
-  }
-  private cleanup(): void {
-    this.totalDrinks = 0;
-    this.people = [];
+      msg += `.\n`;
+    }
+    return msg;
   }
 }
