@@ -1,11 +1,12 @@
-import Discord, { User, MessageEmbed, RichEmbed } from "discord.js";
+import Discord, { RichEmbed } from "discord.js";
 import * as _ from "lodash";
 import { Client } from "pg";
 import {
   initializeDatabase,
   addDrink,
   getDrinkCount,
-  getDrinksForGuild
+  getDrinksForGuild,
+  clearDrinksForGuild
 } from "./network";
 require("dotenv").config();
 
@@ -50,11 +51,11 @@ export class App {
     }
   }
 
-  public resetBotHandler(message: Discord.Message) {
+  public async resetBotHandler(message: Discord.Message) {
+    await clearDrinksForGuild(this.pgClient, message);
     message.channel.send(
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
-    this.cleanup();
   }
 
   public helpHandler(message: Discord.Message) {
@@ -100,6 +101,4 @@ export class App {
     }
     return msg;
   }
-
-  private cleanup(): void {}
 }

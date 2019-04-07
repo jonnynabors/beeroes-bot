@@ -69,4 +69,20 @@ const getDrinksForGuild = async (client: Client, message: Message) => {
   return things;
 };
 
-export { initializeDatabase, addDrink, getDrinkCount, getDrinksForGuild };
+const clearDrinksForGuild = async (client: Client, message: Message) => {
+  const response = await client.query({
+    rowMode: "array",
+    text: `
+    UPDATE drinks SET active = false WHERE guild = '${message.guild.id}'
+    `
+  });
+  return response;
+};
+
+export {
+  initializeDatabase,
+  addDrink,
+  getDrinkCount,
+  getDrinksForGuild,
+  clearDrinksForGuild
+};

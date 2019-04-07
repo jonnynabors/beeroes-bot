@@ -4,7 +4,7 @@ import { App } from "./app";
 const client = new Discord.Client();
 
 const pgClient = new Client({
-  connectionString: "postgres://jnabors:password@127.0.0.1:5432/jnabors"
+  connectionString: process.env.CONNECTION_STRING
 });
 pgClient.connect();
 
