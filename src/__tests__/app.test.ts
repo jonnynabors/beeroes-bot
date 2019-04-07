@@ -170,12 +170,19 @@ describe("Beeroes Bot", () => {
         { username: "Corrupting", drinkname: "Whiskey" },
         { username: "Corrupting", drinkname: "Bud Light" }
       ],
-      Giantjimmy: [{ username: "226128681326739456", drinkname: "Bud Light" }]
+      Giantjimmy: [{ username: "Giantjimmy", drinkname: "Bud Light" }],
+      Cathedrals: [
+        { username: "Cathedrals", drinkname: "Miller Light" },
+        { username: "Cathedrals", drinkname: "Bud Light" },
+        { username: "Cathedrals", drinkname: "Miller Light" },
+        { username: "Cathedrals", drinkname: "Bud Light" },
+        { username: "Cathedrals", drinkname: "Bud Light" },
+        { username: "Cathedrals", drinkname: "Blue Moon" }
+      ]
     };
 
     expect(app.messageFormatter(testData)).toEqual(
-      `Corrupting has had 2 Bud Lights and a Whiskey.\n
-      Giantjimmy has had a Bud Light.`
+      `Corrupting has had 2 Bud Lights, and a Whiskey.\nGiantjimmy has had a Bud Light.\nCathedrals has had 2 Miller Lights, and 3 Bud Lights, and a Blue Moon.\n`
     );
   });
 });

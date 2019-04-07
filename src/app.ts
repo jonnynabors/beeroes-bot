@@ -1,7 +1,5 @@
 import Discord, { User, MessageEmbed, RichEmbed } from "discord.js";
-import Person from "./models/Person";
 import * as _ from "lodash";
-import Drink from "./models/Drink";
 import { Client } from "pg";
 import {
   initializeDatabase,
@@ -14,12 +12,10 @@ require("dotenv").config();
 export class App {
   client: Discord.Client;
   pgClient: Client;
-  public people: Person[];
 
   constructor(client: Discord.Client, pgClient: Client) {
     this.client = client;
     this.pgClient = pgClient;
-    this.people = [];
   }
 
   public readyHandler() {
@@ -44,17 +40,13 @@ export class App {
 
   public async whoIsDrunkHandler(message: Discord.Message) {
     const people = await getDrinksForGuild(this.pgClient, message);
-    const newLocal = _.groupBy(people, "username");
-    // @ts-ignore
-    console.log(newLocal);
-    // console.log(Object.keys(newLocal));
-
+    const drinksByUserName = _.groupBy(people, "username");
     if (people.length === 0) {
       message.channel.send(
         "Nobody is drunk because nobody has had anything to drink! 🏝️"
       );
     } else {
-      // message.channel.send(this.getDrinks());
+      message.channel.send(this.messageFormatter(drinksByUserName));
     }
   }
 
@@ -82,87 +74,23 @@ export class App {
     message.channel.send(embed);
   }
 
+  // TODO: Move this into a class, improve the text formatting
   public messageFormatter(drinkData: any) {
     let msg = "";
     for (var key in drinkData) {
-      console.log(key);
-      console.log(_.orderBy(drinkData[key], "drinkname"));
-      msg += `${key} has had`;
+      var drinkCounts = _.countBy(drinkData[key], "drinkname");
+      msg += `${key} has had `;
+      for (var key in drinkCounts) {
+        if (drinkCounts[key] === 1) {
+          msg += `a ${key}`;
+        } else {
+          msg += `${drinkCounts[key]} ${key}s, and `;
+        }
+      }
+      msg += `.\n`;
     }
     return msg;
   }
 
-  private addDrinkToUser(user: User, drinkName: string) {
-    let person: Person | undefined = _.find(
-      this.people,
-      (person: Person) => person.user.username === user.username
-    );
-    if (!person) {
-      this.createNewPersonWithDrink(user, drinkName);
-    } else {
-      let existingDrink = _.find(
-        person.drinks,
-        (drink: Drink) => drink.name === drinkName
-      );
-
-      if (existingDrink) {
-        existingDrink.quantity++;
-      } else {
-        person.drinks.push({
-          name: drinkName,
-          quantity: 1
-        });
-      }
-      person.drinks = _.reverse(
-        _.sortBy(person.drinks, (drink: Drink) => drink.quantity)
-      );
-    }
-  }
-
-  private createNewPersonWithDrink(user: Discord.User, drinkName: string) {
-    let person: Person = {
-      user: user,
-      drinks: [
-        {
-          name: drinkName,
-          quantity: 1
-        }
-      ]
-    };
-    this.people.push(person);
-  }
-
-  private getDrinks(): string {
-    let totalDrinks = this.people.map(person => {
-      if (person.drinks.length === 1) {
-        return this.singleDrinkMessage(person);
-      } else {
-        return `${person.user.username} has had${this.multiDrinkMessage(
-          person.drinks
-        )}`;
-      }
-    });
-    return _.join(totalDrinks, "");
-  }
-
-  private singleDrinkMessage(person: Person): string {
-    return `${
-      person.user.username
-    } has had a ${person.drinks[0].name.toString()}.\n`;
-  }
-
-  private multiDrinkMessage(drinks: Drink[]): string {
-    let msg = drinks.map(drink => {
-      if (drink.quantity === 1) {
-        return ` and a ${drink.name}`;
-      } else {
-        return ` ${drink.quantity} ${drink.name}s,`;
-      }
-    });
-    return `${msg.join("").toString()}.\n`;
-  }
-
-  private cleanup(): void {
-    this.people = [];
-  }
+  private cleanup(): void {}
 }
