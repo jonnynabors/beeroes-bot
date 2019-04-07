@@ -1,4 +1,4 @@
-import { Client } from "pg";
+import { Client, QueryResult } from "pg";
 import { Message } from "discord.js";
 import * as _ from "lodash";
 
@@ -11,8 +11,8 @@ const initializeDatabase = (client: Client) => {
               "drinkname" varchar (100) NOT NULL,
               "active" boolean
             )`,
-    (err, res) => {
-      if (err) console.log(err);
+    (err: Error, res: QueryResult) => {
+      if (err) console.log(err, res);
     }
   );
 };
@@ -25,7 +25,7 @@ const addDrink = (client: Client, message: Message, drinkName: string) => {
       message.guild.id
     }', '${drinkName}', true)
         `,
-    (err, res) => {
+    (err: Error, res: QueryResult) => {
       console.log(err, res);
     }
   );
@@ -60,7 +60,7 @@ const getDrinksForGuild = async (client: Client, message: Message) => {
 
   let things: Thing[] = [];
 
-  response.rows.forEach(row => {
+  response.rows.forEach((row: any[]) => {
     things.push({
       username: row[1],
       drinkname: row[3]
