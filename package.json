@@ -7,7 +7,7 @@
     "bundle:watch": "webpack --watch",
     "server": "nodemon --exec node build/server.ts",
     "start": "concurrently \"yarn run bundle:watch\" \"yarn run server\"",
-    "production": "CONNECTION_STRING=(heroku config:get DATABASE_URL -a beeroes-dev) && tsc && node build/index.js"
+    "production": "tsc && node build/index.js"
   },
   "repository": "https://github.com/jonnynabors/beeroes-bot.git",
   "author": "Jonny Nabors <jonnynabors@gmail.com>",
