@@ -21,3 +21,7 @@ Clears the drink list
 ### !dc-help
 
 Lists all commands that Drunkcord knows
+
+### !beers {beer name}
+
+Outputs data from Untappd about the beer you're drinking!
