@@ -17,7 +17,6 @@ app.client.on("ready", () => {
 app.client.on("message", (msg: Discord.Message) => {
   msg.cleanContent;
   if (was(msg, "!cheers")) {
-    console.log(was(msg, "!cheers"));
     app.cheersHandler(msg);
   }
 

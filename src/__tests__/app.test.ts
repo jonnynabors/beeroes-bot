@@ -62,16 +62,6 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit the amount of beers drank by the server", () => {
-    jest.mock("../network", () => {
-      return {
-        addDrink: () => {
-          console.log("fuck");
-        },
-        getDrinkCount: () => {
-          console.log("frick");
-        }
-      };
-    });
     testMessage.content = "!cheers a beer";
     app.cheersHandler(testMessage);
     testMessage.content = "!cheers a vodka";
