@@ -8,13 +8,22 @@ import {
 } from "discord.js";
 import { App } from "../app";
 
+jest.mock("../network", () => {
+  return {
+    addDrink: () => {
+      console.log("make me");
+    },
+    getDrinkCount: () => {
+      console.log("do cooler stuff so the tests work");
+    }
+  };
+});
 describe("Beeroes Bot", () => {
   let testClient: Client;
   let guild: Guild;
   let textChannel: TextChannel;
   let testMessage: Message;
   let app: App;
-
   beforeEach(() => {
     testClient = new Client();
     // @ts-ignore
@@ -53,9 +62,9 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit the amount of beers drank by the server", () => {
-    testMessage.content = "dc!cheers a beer";
+    testMessage.content = "!cheers a beer";
     app.cheersHandler(testMessage);
-    testMessage.content = "dc!cheers a vodka";
+    testMessage.content = "!cheers a vodka";
     app.cheersHandler(testMessage);
 
     app.drinkCountHandler(testMessage);
@@ -84,10 +93,10 @@ describe("Beeroes Bot", () => {
     app.helpHandler(testMessage);
     let commands = `
       How to use Drunkcord! \n
-      \`dc!cheers <drink_name>\` will add a drink\n
-      \`dc!drinks\` will show how many total drinks have been drank\n
-      \`dc!drunk\` will show who's drunk\n
-      \`dc!closingtime\` will reset the drinks
+      \`!cheers <drink_name>\` will add a drink\n
+      \`!drinks\` will show how many total drinks have been drank\n
+      \`!drunk\` will show who's drunk\n
+      \`!closingtime\` will reset the drinks
     `;
     let embed = new RichEmbed()
       .setTitle("Drunkcord Help")
