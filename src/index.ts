@@ -16,23 +16,27 @@ app.client.on("ready", () => {
 
 app.client.on("message", (msg: Discord.Message) => {
   msg.cleanContent;
-  if (msg.content.includes("dc!cheers")) {
+  if (was(msg, "!cheers")) {
     app.cheersHandler(msg);
   }
 
-  if (msg.content === "dc!drinks") {
+  if (was(msg, "!drinks")) {
     app.drinkCountHandler(msg);
   }
 
-  if (msg.content === "dc!drunk") {
+  if (was(msg, "!drunk")) {
     app.whoIsDrunkHandler(msg);
   }
 
-  if (msg.content === "dc!closingtime") {
+  if (was(msg, "!closingtime")) {
     app.resetBotHandler(msg);
   }
 
-  if (msg.content === "dc!help") {
+  if (was(msg, "!db-help")) {
     app.helpHandler(msg);
   }
 });
+
+function was(msg: Discord.Message, command: string) {
+  return msg.content.toLowerCase().includes(command);
+}

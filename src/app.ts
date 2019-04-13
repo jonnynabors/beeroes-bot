@@ -62,10 +62,10 @@ export class App {
     // TODO: Make this a constant
     let commands = `
       How to use Drunkcord! \n
-      \`dc!cheers <drink_name>\` will add a drink\n
-      \`dc!drinks\` will show how many total drinks have been drank\n
-      \`dc!drunk\` will show who's drunk\n
-      \`dc!closingtime\` will reset the drinks
+      \`!cheers <drink_name>\` will add a drink\n
+      \`!drinks\` will show how many total drinks have been drank\n
+      \`!drunk\` will show who's drunk\n
+      \`!closingtime\` will reset the drinks
     `;
     let embed = new RichEmbed()
       .setTitle("Drunkcord Help")
