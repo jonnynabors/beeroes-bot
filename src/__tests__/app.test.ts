@@ -8,13 +8,22 @@ import {
 } from "discord.js";
 import { App } from "../app";
 
+jest.mock("../network", () => {
+  return {
+    addDrink: () => {
+      console.log("make me");
+    },
+    getDrinkCount: () => {
+      console.log("do cooler stuff so the tests work");
+    }
+  };
+});
 describe("Beeroes Bot", () => {
   let testClient: Client;
   let guild: Guild;
   let textChannel: TextChannel;
   let testMessage: Message;
   let app: App;
-
   beforeEach(() => {
     testClient = new Client();
     // @ts-ignore
@@ -53,9 +62,19 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit the amount of beers drank by the server", () => {
-    testMessage.content = "dc!cheers a beer";
+    jest.mock("../network", () => {
+      return {
+        addDrink: () => {
+          console.log("fuck");
+        },
+        getDrinkCount: () => {
+          console.log("frick");
+        }
+      };
+    });
+    testMessage.content = "!cheers a beer";
     app.cheersHandler(testMessage);
-    testMessage.content = "dc!cheers a vodka";
+    testMessage.content = "!cheers a vodka";
     app.cheersHandler(testMessage);
 
     app.drinkCountHandler(testMessage);

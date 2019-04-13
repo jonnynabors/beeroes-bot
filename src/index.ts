@@ -17,6 +17,7 @@ app.client.on("ready", () => {
 app.client.on("message", (msg: Discord.Message) => {
   msg.cleanContent;
   if (was(msg, "!cheers")) {
+    console.log(was(msg, "!cheers"));
     app.cheersHandler(msg);
   }
 
@@ -34,6 +35,10 @@ app.client.on("message", (msg: Discord.Message) => {
 
   if (was(msg, "!db-help")) {
     app.helpHandler(msg);
+  }
+
+  if (was(msg, "!beers")) {
+    app.beerHandler(msg);
   }
 });
 
