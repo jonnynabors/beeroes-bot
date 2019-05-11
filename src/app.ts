@@ -27,9 +27,15 @@ export class App {
 
   public cheersHandler(message: Discord.Message) {
     let drinkName = message.content.replace("!cheers", "").trimLeft();
-    addDrink(this.pgClient, message, drinkName);
 
-    message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
+    if (drinkName.length === 0) {
+      message.channel.send(
+        "You can't cheers with an empty glass! Add the name of what you're drinking after you !cheers"
+      );
+    } else {
+      addDrink(this.pgClient, message, drinkName);
+      message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
+    }
   }
 
   public async drinkCountHandler(message: Discord.Message) {
@@ -77,6 +83,12 @@ export class App {
 
   public async beerHandler(message: Discord.Message) {
     let drinkName = message.content.replace("!beers", "").trimLeft();
+    if (drinkName.length === 0) {
+      message.channel.send(
+        "You can't raise a beer without providing a name! Make sure to include the name of the beer you're drinking after !beers"
+      );
+      return;
+    }
     await addDrink(this.pgClient, message, drinkName);
     try {
       const data = await getBeerInformation(drinkName);
