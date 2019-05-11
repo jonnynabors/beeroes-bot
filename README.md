@@ -1,4 +1,4 @@
-# Druncord
+# Drunkcord
 
 A Discord Bot to keep track of who is drinking in the Discord Server!
 
