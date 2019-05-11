@@ -41,6 +41,10 @@ app.client.on("message", (msg: Discord.Message) => {
   }
 });
 
-function was(msg: Discord.Message, command: string) {
-  return msg.content.toLowerCase().includes(command);
+export function was(msg: Discord.Message, command: string) {
+  // Only look for a command at the beginning of a message
+  return msg.content
+    .split(" ")[0]
+    .toLowerCase()
+    .includes(command);
 }

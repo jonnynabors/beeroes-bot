@@ -7,16 +7,15 @@ import {
   RichEmbed
 } from "discord.js";
 import { App } from "../app";
+import * as Network from "../network";
 
-jest.mock("../network", () => {
-  return {
-    addDrink: () => {
-      console.log("make me");
-    },
-    getDrinkCount: () => {
-      console.log("do cooler stuff so the tests work");
-    }
-  };
+jest.spyOn(Network, "initializeDatabase").mockImplementation(() => jest.fn());
+jest.spyOn(Network, "clearDrinksForGuild").mockResolvedValue({
+  command: "",
+  rowCount: 0,
+  oid: 0,
+  rows: [],
+  fields: []
 });
 describe("Beeroes Bot", () => {
   let testClient: Client;
@@ -52,8 +51,10 @@ describe("Beeroes Bot", () => {
     expect(console.log).toHaveBeenCalledWith("I am alive and well!");
   });
 
-  it("should emit a cheers emoji when the cheers handler is called", () => {
-    testMessage.content = "dc!cheers";
+  it("should emit a cheers emoji when the cheers handler is called with a drink", () => {
+    jest.spyOn(Network, "addDrink").mockImplementation(() => jest.fn());
+
+    testMessage.content = "!cheers Vodka";
     app.cheersHandler(testMessage);
 
     expect(textChannel.send).toHaveBeenCalledWith(
@@ -61,28 +62,52 @@ describe("Beeroes Bot", () => {
     );
   });
 
-  it("should emit the amount of beers drank by the server", () => {
+  it("should return an error message and not log a drink if an empty cheers is called for", () => {
+    jest.spyOn(Network, "addDrink").mockImplementation(() => jest.fn());
+
+    testMessage.content = "!cheers    ";
+    app.cheersHandler(testMessage);
+
+    expect(textChannel.send).toHaveBeenCalledWith(
+      "You can't cheers with an empty glass! Add the name of what you're drinking after you !cheers"
+    );
+  });
+
+  it("should return an error message and not log a beer if an empty beers is called for", () => {
+    // jest.spyOn()
+    testMessage.content = "!beers    ";
+    app.beerHandler(testMessage);
+
+    expect(textChannel.send).toHaveBeenCalledWith(
+      "You can't raise a beer without providing a name! Make sure to include the name of the beer you're drinking after !beers"
+    );
+  });
+
+  it("should emit the amount of beers drank by the server", async () => {
+    jest.spyOn(Network, "addDrink").mockImplementation(() => jest.fn());
     testMessage.content = "!cheers a beer";
     app.cheersHandler(testMessage);
     testMessage.content = "!cheers a vodka";
     app.cheersHandler(testMessage);
 
-    app.drinkCountHandler(testMessage);
+    jest.spyOn(Network, "getDrinkCount").mockResolvedValue(2);
+    await app.drinkCountHandler(testMessage);
     expect(textChannel.send).toHaveBeenLastCalledWith(
       "2 drink(s) have been consumed by the server! 🍻🥃"
     );
   });
 
-  it("should emit a message saying the server is sober if nobody has had anything to drink", () => {
-    app.whoIsDrunkHandler(testMessage);
+  it("should emit a message saying the server is sober if nobody has had anything to drink", async () => {
+    jest.spyOn(Network, "getDrinksForGuild").mockResolvedValue([]);
+    await app.whoIsDrunkHandler(testMessage);
     expect(textChannel.send).toHaveBeenCalledWith(
       "Nobody is drunk because nobody has had anything to drink! 🏝️"
     );
   });
 
-  it("should emit a message notifying the drinks have been cleared", () => {
+  it("should emit a message notifying the drinks have been cleared", async () => {
     testMessage.content = "dc!closingtime";
-    app.resetBotHandler(testMessage);
+    await app.resetBotHandler(testMessage);
     expect(textChannel.send).toHaveBeenCalledWith(
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
@@ -106,7 +131,7 @@ describe("Beeroes Bot", () => {
     expect(textChannel.send).toHaveBeenCalledWith(embed);
   });
 
-  it.only("should correctly format drinks", () => {
+  it("should correctly format drinks", () => {
     const testData = {
       Corrupting: [
         { username: "Corrupting", drinkname: "Bud Light" },
