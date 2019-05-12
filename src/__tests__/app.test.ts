@@ -8,6 +8,8 @@ import {
 } from "discord.js";
 import { App } from "../app";
 import * as Network from "../network";
+import { commands } from "../utils/constants";
+import { messageFormatter } from "../utils/helpers";
 
 jest.spyOn(Network, "initializeDatabase").mockImplementation(() => jest.fn());
 jest.spyOn(Network, "clearDrinksForGuild").mockResolvedValue({
@@ -114,15 +116,8 @@ describe("Beeroes Bot", () => {
   });
 
   it("should emit help commands when asked politely", () => {
-    testMessage.content = "dc!help";
+    testMessage.content = "!db-help";
     app.helpHandler(testMessage);
-    let commands = `
-      How to use Drunkcord! \n
-      \`!cheers <drink_name>\` will add a drink\n
-      \`!drinks\` will show how many total drinks have been drank\n
-      \`!drunk\` will show who's drunk\n
-      \`!closingtime\` will reset the drinks
-    `;
     let embed = new RichEmbed()
       .setTitle("Drunkcord Help")
       .setColor(0xff0000)
@@ -153,7 +148,7 @@ describe("Beeroes Bot", () => {
       ]
     };
 
-    expect(app.messageFormatter(testData)).toEqual(
+    expect(messageFormatter(testData)).toEqual(
       `Corrupting has had 2 Bud Lights, and a Whiskey.\nDeathspacito has had a Bud Light, and a Whiskey.\nGiantjimmy has had a Bud Light.\nCathedrals has had 2 Miller Lights, and 3 Bud Lights, and a Blue Moon.\n`
     );
   });
