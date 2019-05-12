@@ -9,6 +9,8 @@ import {
   clearDrinksForGuild,
   getBeerInformation
 } from "./network";
+import { commands } from "./utils/constants";
+import { messageFormatter } from "./utils/helpers";
 require("dotenv").config();
 
 export class App {
@@ -54,7 +56,7 @@ export class App {
         "Nobody is drunk because nobody has had anything to drink! 🏝️"
       );
     } else {
-      message.channel.send(this.messageFormatter(drinksByUserName));
+      message.channel.send(messageFormatter(drinksByUserName));
     }
   }
 
@@ -63,17 +65,16 @@ export class App {
     message.channel.send(
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
+    try {
+      await this.client.user.setActivity(`for new drink updates.`, {
+        type: "WATCHING"
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public helpHandler(message: Discord.Message) {
-    // TODO: Make this a constant
-    let commands = `
-      How to use Drunkcord! \n
-      \`!cheers <drink_name>\` will add a drink\n
-      \`!drinks\` will show how many total drinks have been drank\n
-      \`!drunk\` will show who's drunk\n
-      \`!closingtime\` will reset the drinks
-    `;
     let embed = new RichEmbed()
       .setTitle("Drunkcord Help")
       .setColor(0xff0000)
@@ -118,45 +119,6 @@ export class App {
         );
       message.channel.send(embed);
     }
-  }
-
-  public async userStatus(message: Discord.Message) {
-    let userStatus = message.content.replace("!drinking", "").trimLeft();
-    if (userStatus.length === 0) {
-      // handle error
-    } else {
-      await message.client.user.setActivity(
-        `${message.author.username} get drunk!`,
-        { type: "WATCHING" }
-      );
-    }
-  }
-
-  // TODO: Move this into a class, improve the text formatting
-  public messageFormatter(drinkData: any) {
-    let msg = "";
-    for (var key in drinkData) {
-      var drinkCounts = _.countBy(drinkData[key], "drinkname");
-      msg += `${key} has had `;
-      let idx = 1;
-      for (var key in drinkCounts) {
-        if (drinkCounts.length === 1) {
-          msg += `a ${key}`;
-        } else {
-          if (drinkCounts[key] === 1) {
-            msg += `a ${key}`;
-          } else {
-            msg += `${drinkCounts[key]} ${key}s`;
-          }
-          if (idx < _.size(drinkCounts)) {
-            msg += `, and `;
-          }
-        }
-        idx++;
-      }
-      msg += `.\n`;
-    }
-    return msg;
   }
 
   private async updateBotStatus(username: string, drinkName: string) {
