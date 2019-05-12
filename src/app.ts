@@ -25,7 +25,7 @@ export class App {
     initializeDatabase(this.pgClient);
   }
 
-  public cheersHandler(message: Discord.Message) {
+  public async cheersHandler(message: Discord.Message) {
     let drinkName = message.content.replace("!cheers", "").trimLeft();
 
     if (drinkName.length === 0) {
@@ -34,6 +34,7 @@ export class App {
       );
     } else {
       addDrink(this.pgClient, message, drinkName);
+      this.updateBotStatus(message.author.username, drinkName);
       message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
     }
   }
@@ -92,6 +93,7 @@ export class App {
     await addDrink(this.pgClient, message, drinkName);
     try {
       const data = await getBeerInformation(drinkName);
+      await this.updateBotStatus(message.author.username, drinkName);
       const fancyBeerMessage = new RichEmbed()
         .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
         .setTitle("Let me tell you about that beer!")
@@ -115,6 +117,18 @@ export class App {
           `I can't find any information about that beer! I'm so sorry to have let you down :(.)`
         );
       message.channel.send(embed);
+    }
+  }
+
+  public async userStatus(message: Discord.Message) {
+    let userStatus = message.content.replace("!drinking", "").trimLeft();
+    if (userStatus.length === 0) {
+      // handle error
+    } else {
+      await message.client.user.setActivity(
+        `${message.author.username} get drunk!`,
+        { type: "WATCHING" }
+      );
     }
   }
 
@@ -143,5 +157,15 @@ export class App {
       msg += `.\n`;
     }
     return msg;
+  }
+
+  private async updateBotStatus(username: string, drinkName: string) {
+    try {
+      await this.client.user.setActivity(`${username} drink a ${drinkName}`, {
+        type: "WATCHING"
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
