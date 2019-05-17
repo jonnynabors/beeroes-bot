@@ -1431,7 +1431,7 @@ date-now@^0.1.4:
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
   integrity sha1-6vQ5/U1ISK105cx9vvIAZyueNFs=
 
-dblapi.js@^2.3.0:
+dblapi.js@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/dblapi.js/-/dblapi.js-2.3.0.tgz#9c600cedc9af0a27c9fd770d85e6c25b71cfa43d"
   integrity sha512-8uZQMBg1coJsL5SEN1oPj2dgjgfm0DW7FhP8XWnG2V/xcOJnQNM2kCId1g/pyqm8PYH9346olL1IrLJQ6m0wOg==
