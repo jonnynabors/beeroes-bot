@@ -36,7 +36,11 @@ export class App {
       );
     } else {
       addDrink(this.pgClient, message, drinkName);
-      this.updateBotStatus(message.author.username, drinkName);
+      this.updateBotStatus(
+        message.author.username,
+        message.guild.id,
+        drinkName
+      );
       message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
     }
   }
@@ -94,7 +98,11 @@ export class App {
     await addDrink(this.pgClient, message, drinkName);
     try {
       const data = await getBeerInformation(drinkName);
-      await this.updateBotStatus(message.author.username, drinkName);
+      await this.updateBotStatus(
+        message.author.username,
+        message.guild.id,
+        drinkName
+      );
       const fancyBeerMessage = new RichEmbed()
         .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
         .setTitle("Let me tell you about that beer!")
@@ -121,10 +129,21 @@ export class App {
     }
   }
 
-  private async updateBotStatus(username: string, drinkName: string) {
+  private async updateBotStatus(
+    username: string,
+    guildId: string,
+    drinkName: string
+  ) {
     try {
-      await this.client.user.setActivity(`${username} drink a ${drinkName}`, {
-        type: "WATCHING"
+      await this.client.guilds.forEach(async guild => {
+        if (guild.id === guildId) {
+          await guild.client.user.setActivity(
+            `${username} drink a ${drinkName}!`,
+            {
+              type: "WATCHING"
+            }
+          );
+        }
       });
     } catch (error) {
       console.log(error);
