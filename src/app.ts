@@ -38,7 +38,7 @@ export class App {
       addDrink(this.pgClient, message, drinkName);
       this.updateBotStatus(
         message.author.username,
-        message.guild.id,
+        message.channel.client,
         drinkName
       );
       message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
@@ -100,7 +100,7 @@ export class App {
       const data = await getBeerInformation(drinkName);
       await this.updateBotStatus(
         message.author.username,
-        message.guild.id,
+        message.client,
         drinkName
       );
       const fancyBeerMessage = new RichEmbed()
@@ -131,19 +131,14 @@ export class App {
 
   private async updateBotStatus(
     username: string,
-    guildId: string,
+    client: Discord.Client,
     drinkName: string
   ) {
     try {
       await this.client.guilds.forEach(async guild => {
-        if (guild.id === guildId) {
-          await guild.client.user.setActivity(
-            `${username} drink a ${drinkName}!`,
-            {
-              type: "WATCHING"
-            }
-          );
-        }
+        client.user.setActivity(`${username} drink a ${drinkName}!`, {
+          type: "WATCHING"
+        });
       });
     } catch (error) {
       console.log(error);
