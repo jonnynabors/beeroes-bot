@@ -135,10 +135,8 @@ export class App {
     drinkName: string
   ) {
     try {
-      await this.client.guilds.forEach(async guild => {
-        client.user.setActivity(`${username} drink a ${drinkName}!`, {
-          type: "WATCHING"
-        });
+      client.user.setActivity(`${username} drink a ${drinkName}!`, {
+        type: "WATCHING"
       });
     } catch (error) {
       console.log(error);
