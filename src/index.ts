@@ -15,14 +15,6 @@ let dblAPI = new DBL(process.env.DBL_API!, client);
 
 app.client.on("ready", () => {
   app.readyHandler();
-  setInterval(() => {
-    try {
-      dblAPI.postStats(client.guilds.size, client.shard.id, client.shard.count);
-      console.log("Successfully posted stats to Discord Bot List");
-    } catch (error) {
-      console.log("Error posting stats to Discord Bot List", error);
-    }
-  }, 1800000); // 30 minutes
 });
 
 app.client.on("message", (msg: Discord.Message) => {
