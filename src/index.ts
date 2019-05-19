@@ -27,7 +27,7 @@ app.client.on("ready", () => {
     } catch (error) {
       console.log("Error posting stats to DBL", error);
     }
-  }, 3000);
+  }, 1800000);
 });
 
 app.client.on("message", (msg: Discord.Message) => {
