@@ -19,6 +19,7 @@ const initializeDatabase = (client: Client) => {
 };
 
 const addDrink = (client: Client, message: Message, drinkName: string) => {
+  console.log("adding drink!");
   client.query(
     `
             INSERT INTO drinks (username, guild, drinkname, active) 
