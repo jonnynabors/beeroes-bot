@@ -36,11 +36,6 @@ export class App {
       );
     } else {
       addDrink(this.pgClient, message, drinkName);
-      this.updateBotStatus(
-        message.author.username,
-        message.channel.client,
-        drinkName
-      );
       message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
     }
   }
@@ -69,13 +64,6 @@ export class App {
     message.channel.send(
       "All drinks have been cleared. Thanks for drinking with me! 🥃"
     );
-    try {
-      await this.client.user.setActivity(`for new drink updates.`, {
-        type: "WATCHING"
-      });
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   public helpHandler(message: Discord.Message) {
@@ -98,11 +86,6 @@ export class App {
     await addDrink(this.pgClient, message, drinkName);
     try {
       const data = await getBeerInformation(drinkName);
-      await this.updateBotStatus(
-        message.author.username,
-        message.client,
-        drinkName
-      );
       const fancyBeerMessage = new RichEmbed()
         .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
         .setTitle("Let me tell you about that beer!")
@@ -126,20 +109,6 @@ export class App {
           `I can't find any information about that beer! I'm so sorry to have let you down :(.)`
         );
       message.channel.send(embed);
-    }
-  }
-
-  private async updateBotStatus(
-    username: string,
-    client: Discord.Client,
-    drinkName: string
-  ) {
-    try {
-      client.user.setActivity(`${username} drink a ${drinkName}!`, {
-        type: "WATCHING"
-      });
-    } catch (error) {
-      console.log(error);
     }
   }
 }
