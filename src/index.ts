@@ -1,6 +1,8 @@
 import Discord from "discord.js";
 import { Client } from "pg";
 import { App } from "./app";
+import DBL from "dblapi.js";
+
 const client = new Discord.Client();
 
 const pgClient = new Client({
@@ -9,10 +11,23 @@ const pgClient = new Client({
 pgClient.connect();
 
 client.login(process.env.CLIENT_ID);
+const dblAPI = new DBL(process.env.DBL_API!, client);
+
 let app = new App(client, pgClient);
 
 app.client.on("ready", () => {
   app.readyHandler();
+  setInterval(async () => {
+    try {
+      await dblAPI.postStats(client.guilds.size);
+      console.log(
+        "Successfully updated DBL with a guild count of ",
+        client.guilds.size
+      );
+    } catch (error) {
+      console.log("Error posting stats to DBL", error);
+    }
+  }, 3000);
 });
 
 app.client.on("message", (msg: Discord.Message) => {
