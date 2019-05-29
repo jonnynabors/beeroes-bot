@@ -83,17 +83,17 @@ export class App {
       );
       return;
     }
-    await addDrink(this.pgClient, message, drinkName);
     try {
       const data = await getBeerInformation(drinkName);
+      await addDrink(this.pgClient, message, data.beer_name);
       const fancyBeerMessage = new RichEmbed()
         .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
         .setTitle("Let me tell you about that beer!")
         .setFooter(
           `
-          ABV: ${data.beer_abv}%
-          Style: ${data.beer_style}
-          `
+        ABV: ${data.beer_abv}%
+        Style: ${data.beer_style}
+        `
         )
         .setColor(0xff0000)
         .setThumbnail(data.beer_label)
@@ -101,6 +101,7 @@ export class App {
       message.channel.send(fancyBeerMessage);
     } catch (error) {
       console.log(error);
+      await addDrink(this.pgClient, message, drinkName);
       let embed = new RichEmbed()
         .setTitle("Oh no!")
         .setColor(0xff0000)
