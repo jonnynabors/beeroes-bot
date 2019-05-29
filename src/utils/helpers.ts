@@ -13,7 +13,6 @@ function messageFormatter(drinkData: any): RichEmbed {
   embed = new RichEmbed();
   embed.setColor("RANDOM");
   embed.setThumbnail("https://i.imgur.com/gaf3cVL.png");
-  embed.setAuthor("Jonny");
 
   currentDrinker = "";
   totalDrinks = 0;
