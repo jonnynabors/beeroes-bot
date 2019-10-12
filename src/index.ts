@@ -1,19 +1,13 @@
 import Discord from "discord.js";
-import { Client } from "pg";
 import { App } from "./app";
 import DBL from "dblapi.js";
 
 const client = new Discord.Client();
 
-const pgClient = new Client({
-  connectionString: process.env.DATABASE_URL
-});
-pgClient.connect();
-
 client.login(process.env.CLIENT_ID);
 const dblAPI = new DBL(process.env.DBL_API!, client);
 
-let app = new App(client, pgClient);
+let app = new App(client);
 
 app.client.on("ready", () => {
   app.readyHandler();
