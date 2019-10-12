@@ -10,6 +10,7 @@ import {
 } from "./network";
 import { commands } from "./utils/constants";
 import { messageFormatter } from "./utils/helpers";
+import { connectToPGPool } from "./db/PostgresPool";
 require("dotenv").config();
 
 export class App {
@@ -19,9 +20,14 @@ export class App {
     this.client = client;
   }
 
-  public readyHandler() {
-    console.log("I am alive and well!");
-    initializeDatabase();
+  public async readyHandler() {
+    try {
+      await connectToPGPool();
+      await initializeDatabase();
+      console.log("I am alive and well!");
+    } catch (error) {
+      console.error("An error occurred while starting the app", error);
+    }
   }
 
   public async cheersHandler(message: Discord.Message) {
@@ -32,8 +38,12 @@ export class App {
         "You can't cheers with an empty glass! Add the name of what you're drinking after you !cheers"
       );
     } else {
-      addDrink(message, drinkName);
-      message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
+      try {
+        await addDrink(message, drinkName);
+        message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
+      } catch (error) {
+        console.log("An error occurred while adding a drink", error);
+      }
     }
   }
 
@@ -41,7 +51,7 @@ export class App {
     try {
       const drinkCount = await getDrinkCount(message);
       message.channel.send(
-        `${drinkCount} drink(s) have been consumed by the server! 🍻🥃`
+        `${drinkCount.rowCount} drink(s) have been consumed by the server! 🍻🥃`
       );
     } catch (error) {
       console.log("Error fetching drink count", error);
@@ -53,7 +63,7 @@ export class App {
     try {
       const people = await getDrinksForGuild(message);
       const drinksByUserName = _.groupBy(people, "username");
-      if (people.length === 0) {
+      if (people!.length === 0) {
         message.channel.send(
           "Nobody is drunk because nobody has had anything to drink! 🏝️"
         );
@@ -61,7 +71,7 @@ export class App {
         message.channel.send(messageFormatter(drinksByUserName));
       }
     } catch (error) {
-      console.log("Error fetching who is drunk", error);
+      console.error("Error fetching who is drunk", error);
       message.channel.send(
         `An error occurred while figuring out who is drunk :(.`
       );
@@ -75,7 +85,7 @@ export class App {
         "All drinks have been cleared. Thanks for drinking with me! 🥃"
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -113,7 +123,7 @@ export class App {
         .setDescription(data.beer_description);
       message.channel.send(fancyBeerMessage);
     } catch (error) {
-      console.log(error);
+      console.error("An error occurred while adding a drink", error);
       try {
         await addDrink(message, drinkName);
         let embed = new RichEmbed()
