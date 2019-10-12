@@ -3,6 +3,11 @@ import { Message } from "discord.js";
 import * as _ from "lodash";
 import axios from "axios";
 
+export interface Thing {
+  username: string;
+  drinkname: string;
+}
+
 const initializeDatabase = (client: Client) => {
   client.query(
     `CREATE TABLE IF NOT EXISTS drinks (
@@ -23,9 +28,7 @@ const addDrink = (client: Client, message: Message, drinkName: string) => {
   client.query(
     `
             INSERT INTO drinks (username, guild, drinkname, active) 
-            values ('${message.author.username}', '${
-      message.guild.id
-    }', '${drinkName}', true)
+            values ('${message.author.username}', '${message.guild.id}', '${drinkName}', true)
         `,
     (err: Error, res: QueryResult) => {
       console.log(err, res);
@@ -33,30 +36,29 @@ const addDrink = (client: Client, message: Message, drinkName: string) => {
   );
 };
 
-const getDrinkCount = async (client: Client, message: Message) => {
-  const response = await client.query({
-    rowMode: "array",
-    text: `
-        SELECT * FROM drinks where guild = '${
-          message.guild.id
-        }' and active = true
-        `
-  });
-  return response.rowCount;
+const getDrinkCount = async (
+  client: Client,
+  message: Message
+): Promise<number | string> => {
+  try {
+    const response = await client.query({
+      rowMode: "array",
+      text: `
+          SELECT * FROM drinks where guild = '${message.guild.id}' and active = true
+          `
+    });
+    return response.rowCount;
+  } catch (error) {
+    console.log("An error occurred while getting the count of drinks", error);
+    return "unknown";
+  }
 };
-
-export interface Thing {
-  username: string;
-  drinkname: string;
-}
 
 const getDrinksForGuild = async (client: Client, message: Message) => {
   const response = await client.query({
     rowMode: "array",
     text: `
-            SELECT * FROM drinks where guild = '${
-              message.guild.id
-            }' and active = true
+            SELECT * FROM drinks where guild = '${message.guild.id}' and active = true
             `
   });
 
