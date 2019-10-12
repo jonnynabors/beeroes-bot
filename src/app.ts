@@ -1,6 +1,5 @@
 import Discord, { RichEmbed } from "discord.js";
 import * as _ from "lodash";
-import { Client } from "pg";
 import {
   initializeDatabase,
   addDrink,
@@ -15,16 +14,14 @@ require("dotenv").config();
 
 export class App {
   client: Discord.Client;
-  pgClient: Client;
 
-  constructor(client: Discord.Client, pgClient: Client) {
+  constructor(client: Discord.Client) {
     this.client = client;
-    this.pgClient = pgClient;
   }
 
   public readyHandler() {
     console.log("I am alive and well!");
-    initializeDatabase(this.pgClient);
+    initializeDatabase();
   }
 
   public async cheersHandler(message: Discord.Message) {
@@ -35,35 +32,51 @@ export class App {
         "You can't cheers with an empty glass! Add the name of what you're drinking after you !cheers"
       );
     } else {
-      addDrink(this.pgClient, message, drinkName);
+      addDrink(message, drinkName);
       message.channel.send("Enjoy that brewchacho, brochacho. 🍺");
     }
   }
 
   public async drinkCountHandler(message: Discord.Message) {
-    const drinkCount = await getDrinkCount(this.pgClient, message);
-    message.channel.send(
-      `${drinkCount} drink(s) have been consumed by the server! 🍻🥃`
-    );
+    try {
+      const drinkCount = await getDrinkCount(message);
+      message.channel.send(
+        `${drinkCount} drink(s) have been consumed by the server! 🍻🥃`
+      );
+    } catch (error) {
+      console.log("Error fetching drink count", error);
+      message.channel.send(`An error occurred fetching your drinks :(. `);
+    }
   }
 
   public async whoIsDrunkHandler(message: Discord.Message) {
-    const people = await getDrinksForGuild(this.pgClient, message);
-    const drinksByUserName = _.groupBy(people, "username");
-    if (people.length === 0) {
+    try {
+      const people = await getDrinksForGuild(message);
+      const drinksByUserName = _.groupBy(people, "username");
+      if (people.length === 0) {
+        message.channel.send(
+          "Nobody is drunk because nobody has had anything to drink! 🏝️"
+        );
+      } else {
+        message.channel.send(messageFormatter(drinksByUserName));
+      }
+    } catch (error) {
+      console.log("Error fetching who is drunk", error);
       message.channel.send(
-        "Nobody is drunk because nobody has had anything to drink! 🏝️"
+        `An error occurred while figuring out who is drunk :(.`
       );
-    } else {
-      message.channel.send(messageFormatter(drinksByUserName));
     }
   }
 
   public async resetBotHandler(message: Discord.Message) {
-    await clearDrinksForGuild(this.pgClient, message);
-    message.channel.send(
-      "All drinks have been cleared. Thanks for drinking with me! 🥃"
-    );
+    try {
+      await clearDrinksForGuild(message);
+      message.channel.send(
+        "All drinks have been cleared. Thanks for drinking with me! 🥃"
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public helpHandler(message: Discord.Message) {
@@ -85,7 +98,7 @@ export class App {
     }
     try {
       const data = await getBeerInformation(drinkName);
-      await addDrink(this.pgClient, message, data.beer_name);
+      await addDrink(message, data.beer_name);
       const fancyBeerMessage = new RichEmbed()
         .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
         .setTitle("Let me tell you about that beer!")
@@ -101,15 +114,20 @@ export class App {
       message.channel.send(fancyBeerMessage);
     } catch (error) {
       console.log(error);
-      await addDrink(this.pgClient, message, drinkName);
-      let embed = new RichEmbed()
-        .setTitle("Oh no!")
-        .setColor(0xff0000)
-        .setThumbnail("https://i.imgur.com/gaf3cVL.png")
-        .setDescription(
-          `I can't find any information about that beer! I'm so sorry to have let you down :(.)`
-        );
-      message.channel.send(embed);
+      try {
+        await addDrink(message, drinkName);
+        let embed = new RichEmbed()
+          .setTitle("Oh no!")
+          .setColor(0xff0000)
+          .setThumbnail("https://i.imgur.com/gaf3cVL.png")
+          .setDescription(
+            `I can't find any information about that beer! I'm so sorry to have let you down :(.)`
+          );
+        message.channel.send(embed);
+      } catch (error) {
+        console.log("Error adding drink:", error);
+        message.channel.send(`An error occurred while adding this drink :(.`);
+      }
     }
   }
 }

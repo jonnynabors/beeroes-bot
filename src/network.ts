@@ -1,15 +1,11 @@
-import { Client, QueryResult } from "pg";
+import { QueryResult } from "pg";
 import { Message } from "discord.js";
 import * as _ from "lodash";
 import axios from "axios";
+import query from "./db/PostgresPool";
 
-export interface Thing {
-  username: string;
-  drinkname: string;
-}
-
-const initializeDatabase = (client: Client) => {
-  client.query(
+const initializeDatabase = () => {
+  query(
     `CREATE TABLE IF NOT EXISTS drinks (
               "id" SERIAL primary key, 
               "username" varchar(450) NOT NULL,  
@@ -23,63 +19,52 @@ const initializeDatabase = (client: Client) => {
   );
 };
 
-const addDrink = (client: Client, message: Message, drinkName: string) => {
+const addDrink = async (message: Message, drinkName: string) => {
   console.log("adding drink!");
-  client.query(
-    `
-            INSERT INTO drinks (username, guild, drinkname, active) 
-            values ('${message.author.username}', '${message.guild.id}', '${drinkName}', true)
-        `,
-    (err: Error, res: QueryResult) => {
-      console.log(err, res);
-    }
-  );
-};
-
-const getDrinkCount = async (
-  client: Client,
-  message: Message
-): Promise<number | string> => {
   try {
-    const response = await client.query({
-      rowMode: "array",
-      text: `
-          SELECT * FROM drinks where guild = '${message.guild.id}' and active = true
-          `
-    });
-    return response.rowCount;
+    await query(
+      `
+                INSERT INTO drinks (username, guild, drinkname, active) 
+                values ('${message.author.username}', '${message.guild.id}', '${drinkName}', true)
+            `
+    );
   } catch (error) {
-    console.log("An error occurred while getting the count of drinks", error);
-    return "unknown";
+    console.log("An error occurred while adding a drink", error);
   }
 };
 
-const getDrinksForGuild = async (client: Client, message: Message) => {
-  const response = await client.query({
-    rowMode: "array",
-    text: `
-            SELECT * FROM drinks where guild = '${message.guild.id}' and active = true
-            `
-  });
+const getDrinkCount = async (message: Message): Promise<number | string> => {
+  const response = await query(
+    `SELECT * FROM drinks where guild = '${message.guild.id}' and active = true`,
+    []
+  );
 
-  let things: Thing[] = [];
-
-  response.rows.forEach((row: any[]) => {
-    things.push({
-      username: row[1],
-      drinkname: row[3]
-    });
-  });
-  return things;
+  if (response === undefined) {
+    console.log(
+      "It looks like an error has occurred while getting the count of drinks. The response is",
+      response
+    );
+  }
+  return response.rowCount;
 };
 
-const clearDrinksForGuild = async (client: Client, message: Message) => {
-  const response = await client.query({
-    rowMode: "array",
-    text: `
-    UPDATE drinks SET active = false WHERE guild = '${message.guild.id}'
-    `
-  });
+const getDrinksForGuild = async (message: Message) => {
+  try {
+    const response = await query(
+      `SELECT * FROM drinks where guild = '${message.guild.id}' and active = true`,
+      []
+    );
+
+    return response.rows;
+  } catch (error) {
+    console.log("An error occurred while fetching drinks", error);
+  }
+};
+
+const clearDrinksForGuild = async (message: Message) => {
+  const response = await query(
+    `UPDATE drinks SET active = false WHERE guild = '${message.guild.id}'`
+  );
   return response;
 };
 
