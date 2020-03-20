@@ -5,6 +5,13 @@ const client = new Discord.Client();
 
 client.login(process.env.CLIENT_ID);
 
+client.on("error", error =>
+  console.error(
+    "An error occurred while initializing the Discord client",
+    error
+  )
+);
+
 let app = new App(client);
 
 app.client.on("ready", () => {
