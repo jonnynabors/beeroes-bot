@@ -1,54 +1,20 @@
-import Discord from "discord.js";
-import { App } from "./app";
+// eslint-disable-next-line node/no-unsupported-features/es-syntax
+import { CommandoClient } from "discord.js-commando";
+const path = require("path");
+require("dotenv").config();
 
-const client = new Discord.Client();
-
-client.login(process.env.CLIENT_ID);
-
-client.on("error", error =>
-  console.error(
-    "An error occurred while initializing the Discord client",
-    error
-  )
-);
-
-let app = new App(client);
-
-app.client.on("ready", () => {
-  app.readyHandler();
+const client = new CommandoClient({
+  commandPrefix: "!",
+  invite: "https://discord.gg/5nJMzPA"
 });
 
-app.client.on("message", (msg: Discord.Message) => {
-  msg.cleanContent;
-  if (was(msg, "!cheers")) {
-    app.cheersHandler(msg);
-  }
-
-  if (was(msg, "!drinks")) {
-    app.drinkCountHandler(msg);
-  }
-
-  if (was(msg, "!drunk")) {
-    app.whoIsDrunkHandler(msg);
-  }
-
-  if (was(msg, "!closingtime")) {
-    app.resetBotHandler(msg);
-  }
-
-  if (was(msg, "!db-help")) {
-    app.helpHandler(msg);
-  }
-
-  if (was(msg, "!beers")) {
-    app.beerHandler(msg);
-  }
-});
-
-export function was(msg: Discord.Message, command: string) {
-  // Only look for a command at the beginning of a message
-  return msg.content
-    .split(" ")[0]
-    .toLowerCase()
-    .includes(command);
+console.log(process.env.CLIENT_ID);
+try {
+  client.login(process.env.CLIENT_ID);
+  client.once("ready", () => {
+    console.log(`Logged in as ${client.user.tag}! (${client.user.id})`);
+    client.user.setActivity("with Commando");
+  });
+} catch (error) {
+  console.error(error);
 }

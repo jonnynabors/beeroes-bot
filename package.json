@@ -9,9 +9,9 @@
     "build": "tsc --project tsconfig.build.json",
     "build:watch": "yarn build --watch",
     "test": "jest",
-    "server": "nodemon --exec node build/Main.js",
+    "server": "nodemon --exec node build/src/index.js",
     "start": "tsc  && concurrently \"yarn run build:watch\" \"yarn run server\"",
-    "production": "tsc && node build/index.js"
+    "production": "tsc && node build/src/index.js"
   },
   "repository": "https://github.com/jonnynabors/beeroes-bot.git",
   "author": "Jonny Nabors <jonnynabors@gmail.com>",
