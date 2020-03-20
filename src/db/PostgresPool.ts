@@ -9,8 +9,7 @@ pool.on("error", (err: Error, client: PoolClient) => {
   console.error("An error occurred for the following client", client);
 });
 
-// @ts-ignore
-export default function query(queryText, values?) {
+export default function query(queryText: any, values?: any) {
   return pool.query(queryText, values);
 }
 

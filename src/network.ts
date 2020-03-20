@@ -22,7 +22,6 @@ const addDrink = async (message: Message, drinkName: string) => {
       `INSERT INTO drinks (username, guild, drinkname, active) values ('${message.author.username}', '${message.guild.id}', '${drinkName}', true)`
     );
   } catch (error) {
-    console.log("in the bad place");
     throw new Error(error);
   }
 };

@@ -5,3 +5,5 @@ yarn-error*
 .env
 coverage/
 .DS_STORE
+
+.vscode
