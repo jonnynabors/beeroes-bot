@@ -1,21 +1,27 @@
 import Discord from "discord.js";
 import { App } from "./app";
+import DBL from "dblapi.js";
 
 const client = new Discord.Client();
 
 client.login(process.env.CLIENT_ID);
-
-client.on("error", error =>
-  console.error(
-    "An error occurred while initializing the Discord client",
-    error
-  )
-);
+const dblAPI = new DBL(process.env.DBL_API!, client);
 
 let app = new App(client);
 
 app.client.on("ready", () => {
   app.readyHandler();
+  setInterval(async () => {
+    try {
+      await dblAPI.postStats(client.guilds.size);
+      console.log(
+        "Successfully updated DBL with a guild count of ",
+        client.guilds.size
+      );
+    } catch (error) {
+      console.log("Error posting stats to DBL", error);
+    }
+  }, 1800000);
 });
 
 app.client.on("message", (msg: Discord.Message) => {

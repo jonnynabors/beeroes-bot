@@ -1436,6 +1436,11 @@ date-now@^0.1.4:
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
   integrity sha1-6vQ5/U1ISK105cx9vvIAZyueNFs=
 
+dblapi.js@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/dblapi.js/-/dblapi.js-2.4.0.tgz#5e209847f2625e380dabaff925baacee33a66791"
+  integrity sha512-SqDYVcV1DBQnyhySTjd+Qvzu7jFr+4eKwl56fGpIti7OlXGF5dmDPeo3jQfRlOXTRn5/I5997MDIJukoDxE3Mg==
+
 debug@=3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
