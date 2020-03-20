@@ -5,6 +5,10 @@ import DBL from "dblapi.js";
 const client = new Discord.Client();
 
 client.login(process.env.CLIENT_ID);
+client.on("error", error =>
+  console.error("An error occurred in the Discord client", error)
+);
+
 const dblAPI = new DBL(process.env.DBL_API!, client);
 
 let app = new App(client);
@@ -50,6 +54,10 @@ app.client.on("message", (msg: Discord.Message) => {
     app.beerHandler(msg);
   }
 });
+
+app.client.on("error", error =>
+  console.error("Another error occurred in maybe the same place", error)
+);
 
 export function was(msg: Discord.Message, command: string) {
   // Only look for a command at the beginning of a message
