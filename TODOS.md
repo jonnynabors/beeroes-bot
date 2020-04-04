@@ -15,7 +15,8 @@
 
 ## Development Tasks
 
-- Add Prettier
+<!-- - Add Prettier -->
+
 - Investigate a better build tool?
 - Set up some alerting/logging solution for the `client.error` related stuff
 - Better documentation so I don't forget how the whole thing works after not touching this code for weeks
