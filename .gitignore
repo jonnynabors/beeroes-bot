@@ -6,4 +6,4 @@ yarn-error*
 coverage/
 .DS_STORE
 
-.vscode
+# .vscode

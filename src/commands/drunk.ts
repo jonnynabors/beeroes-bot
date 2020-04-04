@@ -2,16 +2,18 @@ import { Command, CommandoClient } from 'discord.js-commando';
 import { getDrinksForGuild } from '../network';
 import { groupBy } from 'lodash';
 import { messageFormatter } from '../utils/helpers';
+
 export class Drunk extends Command {
   constructor(client: CommandoClient) {
     super(client, {
       name: 'drunk',
       group: 'basic-commands',
       memberName: 'drunk',
-      description: 'description',
+      description: 'Find out who is the drunkest in your server!',
       examples: ['!drunk'],
     });
   }
+
   async run(message: any) {
     try {
       const people = await getDrinksForGuild(message);
