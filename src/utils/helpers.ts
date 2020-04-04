@@ -1,4 +1,4 @@
-import { maxBy, countBy } from 'lodash';
+import { maxBy, countBy, sample } from 'lodash';
 import { RichEmbed } from 'discord.js';
 let embed: RichEmbed;
 // total drinks consumed by server
@@ -62,4 +62,16 @@ function messageFormatter(drinkData: any): RichEmbed {
   return embed;
 }
 
-export { messageFormatter };
+function getRandomCheersMessage() {
+  const cheersMessages = [
+    `Enjoy that brewchacho, brochacho. 🍺`,
+    `Hey all you cool cats and kittens, that's a nice looking drink! 🐯`,
+    `Cheers! You're not gonna just have one...are you? 🤷‍`,
+    `Cheers! You know what type of decisions are made while drunk? The best kinds! 🍾`,
+    `Cheers! Looks like you're about to have your favorite alcoholic drink, a lot! 🍸`,
+    `I'll drink to that! Let's have a few more! 🍷`,
+  ];
+  return sample(cheersMessages);
+}
+
+export { messageFormatter, getRandomCheersMessage };
