@@ -4,11 +4,12 @@ export class ClosingTime extends Command {
   constructor(client: CommandoClient) {
     super(client, {
       name: 'closingtime',
+      aliases: ['closing-time', 'clear-drinks', 'cleardrinks'],
       group: 'basic-commands',
       memberName: 'closingtime',
       description:
         'Clears all of the drinks in Drunkcord, allowing you to start the drinking fresh!',
-      examples: ['!closingtime'],
+      examples: ['!closingtime', '!closing-time', '!clear-drinks', '!cleardrinks'],
     });
   }
   async run(message: any) {

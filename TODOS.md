@@ -3,9 +3,9 @@
 ## Features
 
 <!-- - Drunk handler -->
+<!-- - Beers handler -->
+<!-- - Closing time handler -->
 
-- Beers handler
-- Closing time handler
 - Add several new cheers sayings, e.g. "Cheers all you cool cats and kittens"
 - "Send a shot" where I can tag who I want to have a drink/shot with. Do a synchronized drink timer
 - Clinking glass audio
