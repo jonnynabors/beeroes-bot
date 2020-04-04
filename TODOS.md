@@ -2,16 +2,21 @@
 
 ## Features
 
-~~- Show notification when cheers is successful~~
-~~- Better text formatting~~
-
+- Drunk handler
+- Beers handler
+- Closing time handler
+- Add several new cheers sayings, e.g. "Cheers all you cool cats and kittens"
+- "Send a shot" where I can tag who I want to have a drink/shot with. Do a synchronized drink timer
 - Clinking glass audio
+
+## Design decisions
+
+- Should we still send an acknowledgement after a drink is successful? Should that be a DM?
 
 ## Development Tasks
 
-~~- Add persistent data storage (MLab)~~
-
-- Have tests run in CI/CD
-- Test out CI/CD with Dev & Prod
-- Hook up w/ Untappd API
-- Set up git releases for production builds (maybe notify in Discord channel when an update happens!)
+- Add Prettier
+- Investigate a better build tool?
+- Set up some alerting/logging solution for the `client.error` related stuff
+- Better documentation so I don't forget how the whole thing works after not touching this code for weeks
+- Think some more about moving this to an AWS EC2 instance and migrating the data off of Heroku
