@@ -23,7 +23,8 @@
     "discord.js-commando": "0.10.0",
     "dotenv": "8.2.0",
     "lodash": "4.17.15",
-    "pg": "7.18.2"
+    "pg": "7.18.2",
+    "typescript": "3.8.3"
   },
   "devDependencies": {
     "@types/axios": "0.14.0",
@@ -44,8 +45,7 @@
     "nodemon": "2.0.2",
     "prettier": "2.0.2",
     "pretty-quick": "^2.0.1",
-    "ts-jest": "25.2.1",
-    "typescript": "3.8.3"
+    "ts-jest": "25.2.1"
   },
   "husky": {
     "hooks": {
