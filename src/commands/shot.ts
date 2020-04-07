@@ -27,37 +27,49 @@ export class Shot extends Command {
     await sentMessage.react(`🚫`);
 
     const collector = sentMessage.createReactionCollector((reaction, user) => {
-      return [`🥂`, `✅`].includes(reaction.emoji.name) && user.id === message.author.id;
+      return [`🥂`, `✅`, `🚫`].includes(reaction.emoji.name) && user.id === message.author.id;
     });
 
     collector.on('collect', async (collected) => {
       if (collected.emoji.name === `✅`) {
-        const shotTakers = [];
-        for (const messageReaction of collected.message.reactions.values()) {
-          if (messageReaction.emoji.name === '🥂') {
-            for (const user of messageReaction.users.values()) {
-              if (!user.bot) {
-                // only users should take shots. alcohol is bad for discord bots :)
-                shotTakers.push(user);
-              }
-            }
-          }
-        }
+        await this.doAGroupShot(collected, message, collector);
+      }
 
-        if (shotTakers.length) {
-          this.countdownToShots(message, shotTakers);
-          collector.stop();
-        } else {
-          await message.say(
-            `It looks likes you're trying to take a group shot with...nobody! React with a 🥂 emoji to participate in the shot, or press 🚫 to cancel the shot!`
-          );
-        }
+      if (collected.emoji.name === `🚫`) {
+        collector.stop();
+        await sentMessage.delete();
       }
     });
 
     collector.on('end', (collection) => {
       console.log(`Ending the shot collector's lifecycle`);
     });
+  }
+
+  private async doAGroupShot(
+    collected: import('discord.js').MessageReaction,
+    message: CommandMessage,
+    collector: import('discord.js').ReactionCollector
+  ) {
+    const shotTakers = [];
+    for (const messageReaction of collected.message.reactions.values()) {
+      if (messageReaction.emoji.name === '🥂') {
+        for (const user of messageReaction.users.values()) {
+          if (!user.bot) {
+            // only users should take shots. alcohol is bad for discord bots :)
+            shotTakers.push(user);
+          }
+        }
+      }
+    }
+    if (shotTakers.length) {
+      this.countdownToShots(message, shotTakers);
+      collector.stop();
+    } else {
+      await message.say(
+        `It looks likes you're trying to take a group shot with...nobody! React with a 🥂 emoji to participate in the shot, or press 🚫 to cancel the shot!`
+      );
+    }
   }
 
   async countdownToShots(message: CommandMessage, shotTakers: (User | undefined)[]) {
