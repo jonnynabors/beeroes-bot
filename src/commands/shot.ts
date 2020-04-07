@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { Message, RichEmbed, User } from 'discord.js';
+import { getRandomShotsGIF } from '../utils/helpers';
 export class Shot extends Command {
   constructor(client: CommandoClient) {
     super(client, {
@@ -36,14 +37,21 @@ export class Shot extends Command {
       }
 
       if (collected.emoji.name === `🚫`) {
-        collector.stop();
-        await sentMessage.delete();
+        await this.cancelAGroupShot(collector, sentMessage);
       }
     });
 
     collector.on('end', (collection) => {
       console.log(`Ending the shot collector's lifecycle`);
     });
+  }
+
+  private async cancelAGroupShot(
+    collector: import('discord.js').ReactionCollector,
+    sentMessage: Message
+  ) {
+    collector.stop();
+    await sentMessage.delete();
   }
 
   private async doAGroupShot(
@@ -77,40 +85,26 @@ export class Shot extends Command {
     // Either resolve all of these in one big promise, or use some recursion or something functional
     // Perhaps RX would do this? At the very least, let's use a setInterval followed by a setTimeout
     const sentMessage = (await message.say('Shot time!')) as Message;
-    setTimeout(async () => {
-      await sentMessage.edit('Time to take a shot in 5');
+    let countdownFromValue = 5;
+
+    const intervalId = setInterval(async () => {
+      await sentMessage.edit(`Time to take a shot in ${countdownFromValue}`);
+      countdownFromValue--;
+
+      if (countdownFromValue === 0) {
+        clearInterval(intervalId);
+        console.log(`Clearing interval ${JSON.stringify(intervalId)}`);
+      }
     }, 1000);
 
-    setTimeout(async () => {
-      await sentMessage.edit('Time to take a shot in 4');
-    }, 2000);
-
-    setTimeout(async () => {
-      await sentMessage.edit('Time to take a shot in 3');
-    }, 3000);
-
-    setTimeout(async () => {
-      await sentMessage.edit('Time to take a shot in 2');
-    }, 4000);
-
-    setTimeout(async () => {
-      await sentMessage.edit('Time to take a shot in 1');
-    }, 5000);
-
-    setTimeout(async () => {
-      try {
-        await sentMessage.delete();
-      } catch (error) {
-        console.error('An error occurred while deleting the countdown message', error);
-      }
+    const timeoutId = setTimeout(async () => {
       try {
         await message.say({
           embed: {
             color: 16777215,
             description: `Shot time! Drink up ${shotTakers}`,
             image: {
-              //   TODO: Build a list of random gifs that are fun to take shots to
-              url: 'https://media.giphy.com/media/xULW8JjyKvBKrIh2xy/giphy.gif',
+              url: getRandomShotsGIF(),
             },
           },
         });
@@ -120,6 +114,9 @@ export class Shot extends Command {
         await message.say(
           `Oh no! An error occurred while orchestrating that group shot! Maybe just take it anyways and pretend this little error never happened?`
         );
+      } finally {
+        clearTimeout(timeoutId);
+        console.log(`Clearing timeout ${JSON.stringify(timeoutId)}`);
       }
     }, 6000);
   }

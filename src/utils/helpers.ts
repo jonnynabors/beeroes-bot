@@ -74,4 +74,15 @@ function getRandomCheersMessage() {
   return sample(cheersMessages);
 }
 
-export { messageFormatter, getRandomCheersMessage };
+function getRandomShotsGIF() {
+  return sample([
+    'https://media.giphy.com/media/UtEviWeCw7tx6/giphy.gif',
+    'https://media.giphy.com/media/xULW8JjyKvBKrIh2xy/giphy.gif',
+    'https://media.giphy.com/media/XqOCxN1WpEzja/giphy.gif',
+    'https://media.giphy.com/media/3osxYwRanhYxKBohvG/giphy.gif',
+    'https://media.giphy.com/media/xUOxfhsAkDLCxOmhLa/giphy.gif',
+    'https://media.giphy.com/media/pzr4m0O3gINEsSk4EB/giphy.gif',
+  ]);
+}
+
+export { messageFormatter, getRandomCheersMessage, getRandomShotsGIF };
