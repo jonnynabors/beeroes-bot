@@ -21,12 +21,14 @@
 ## Design decisions
 
 - Should we still send an acknowledgement after a drink is successful? Should that be a DM?
+  - Mitigating factor here could be a `silent` mode for commands
 
 ## Development Tasks
 
 <!-- - Add Prettier -->
 
 - Investigate a better build tool?
+- Move API key into dotenv
 - Set up some alerting/logging solution for the `client.error` related stuff
 - Better documentation so I don't forget how the whole thing works after not touching this code for weeks
 - Think some more about moving this to an AWS EC2 instance and migrating the data off of Heroku
