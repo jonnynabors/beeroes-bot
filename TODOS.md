@@ -12,11 +12,11 @@
 - Clinking glass audio
 - "Silent mode", where I can do like `!beers two hearted ale --silent` or `!beers-silent two hearted ale` and just get a reaction as confirmation
 - "Multiple drink mode", where I can do like `!beers-multiple two hearted ale, coors light` or `!cheers-many vodka soda, whiskey rocks`
-- Emoji voting or emoji interacting
-  - Trigger an event with some Emoji voting (participate or don't)
-  - Have a way to start the shot countdown or whatever
-  - Figure out if we want to have a countdown
-  - Add those drinks to the server
+  <!-- - Emoji voting or emoji interacting -->
+    <!-- - Trigger an event with some Emoji voting (participate or don't) -->
+    <!-- - Have a way to start the shot countdown or whatever -->
+    <!-- - Figure out if we want to have a countdown -->
+    <!-- - Add those drinks to the server -->
 
 ## Design decisions
 

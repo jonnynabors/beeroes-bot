@@ -2,13 +2,14 @@
 import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { Message, RichEmbed, User } from 'discord.js';
 import { getRandomShotsGIF } from '../utils/helpers';
+import { addDrink } from '../network';
 export class Shot extends Command {
   constructor(client: CommandoClient) {
     super(client, {
       name: 'shot',
       group: 'basic-commands',
       memberName: 'shot',
-      description: 'Call for a server-wide shot! Members can opt in to participate',
+      description: 'Call for a server-wide shot! Members can react with a 🥂 to participate',
       examples: ['!shot'],
     });
   }
@@ -108,6 +109,13 @@ export class Shot extends Command {
             },
           },
         });
+
+        await Promise.all(
+          shotTakers.map(async (user) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            await addDrink(user?.username!, message.guild.id, 'group shot');
+          })
+        );
       } catch (error) {
         console.error('An error occurred while sending the take shot message', error);
         // TODO: Some generic error handling, preferably the built-in commando one

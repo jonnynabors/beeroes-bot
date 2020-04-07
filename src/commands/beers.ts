@@ -1,4 +1,4 @@
-import { Command, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { getBeerInformation, addDrink } from '../network';
 import { RichEmbed } from 'discord.js';
 export class Beers extends Command {
@@ -20,10 +20,11 @@ export class Beers extends Command {
     });
   }
 
-  async run(message: any, { beerName }: any) {
+  // @ts-ignore
+  async run(message: CommandMessage, { beerName }: any) {
     try {
       const data = await getBeerInformation(beerName);
-      await addDrink(message, data.beer_name);
+      await addDrink(message.author.username, message.guild.id, data.beer_name);
       const fancyBeerMessage = new RichEmbed()
         .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
         .setTitle('Let me tell you about that beer!')
@@ -40,7 +41,7 @@ export class Beers extends Command {
     } catch (error) {
       console.error('An error occurred while adding a drink', error);
       try {
-        await addDrink(message, beerName);
+        await addDrink(message.author.username, message.guild.id, beerName);
         const embed = new RichEmbed()
           .setTitle('Oh no!')
           .setColor(0xff0000)

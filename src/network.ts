@@ -16,10 +16,10 @@ const initializeDatabase = async () => {
   );
 };
 
-const addDrink = async (message: Message, drinkName: string) => {
+const addDrink = async (username: string, guildId: string, drinkName: string) => {
   try {
     await query(
-      `INSERT INTO drinks (username, guild, drinkname, active) values ('${message.author.username}', '${message.guild.id}', '${drinkName}', true)`
+      `INSERT INTO drinks (username, guild, drinkname, active) values ('${username}', '${guildId}', '${drinkName}', true)`
     );
   } catch (error) {
     throw new Error(error);
