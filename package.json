@@ -11,7 +11,8 @@
     "test": "jest",
     "server": "nodemon --exec node build/src/index.js",
     "start": "tsc  && concurrently \"yarn run build:watch\" \"yarn run server\"",
-    "production": "tsc && node build/src/index.js"
+    "postinstall": "tsc",
+    "production": "node build/src/index.js"
   },
   "repository": "https://github.com/jonnynabors/beeroes-bot.git",
   "author": "Jonny Nabors <jonnynabors@gmail.com>",
@@ -23,8 +24,7 @@
     "discord.js-commando": "0.10.0",
     "dotenv": "8.2.0",
     "lodash": "4.17.15",
-    "pg": "7.18.2",
-    "typescript": "3.8.3"
+    "pg": "7.18.2"
   },
   "devDependencies": {
     "@types/axios": "0.14.0",
@@ -45,7 +45,8 @@
     "nodemon": "2.0.2",
     "prettier": "2.0.2",
     "pretty-quick": "^2.0.1",
-    "ts-jest": "25.2.1"
+    "ts-jest": "25.2.1",
+    "typescript": "3.8.3"
   },
   "husky": {
     "hooks": {
