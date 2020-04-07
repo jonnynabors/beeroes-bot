@@ -10,6 +10,8 @@
 - "Send a shot" where I can tag who I want to have a drink/shot with. Do a synchronized drink timer
 - BAC Calculator, but make sure people know we're not storing any user data
 - Clinking glass audio
+- "Silent mode", where I can do like `!beers two hearted ale --silent` or `!beers-silent two hearted ale` and just get a reaction as confirmation
+- "Multiple drink mode", where I can do like `!beers-multiple two hearted ale, coors light` or `!cheers-many vodka soda, whiskey rocks`
 - Emoji voting or emoji interacting
   - Trigger an event with some Emoji voting (participate or don't)
   - Have a way to start the shot countdown or whatever

@@ -17,29 +17,41 @@ export class Shot extends Command {
   async run(message: CommandMessage) {
     const embed = new RichEmbed().setTitle(`Let's take a shot!`)
       .setDescription(`${message.author} has request a group shot! React with an emoji to join!
-      🥂: Participate in the shot
-      🚫: Nevermind, I don't want to take the shot
-      ✅: We're ready to take a drink`);
+      🥂: Participate in the shot\n
+      ✅: We're ready to take a drink\n
+      🚫: Cancel the group shot`);
 
     const sentMessage = (await message.say(embed)) as Message;
     await sentMessage.react(`🥂`);
-    await sentMessage.react(`🚫`);
     await sentMessage.react(`✅`);
+    await sentMessage.react(`🚫`);
 
     const collector = sentMessage.createReactionCollector((reaction, user) => {
-      return [`🥂`, `🚫`, `✅`].includes(reaction.emoji.name) && user.id === message.author.id;
+      return [`🥂`, `✅`].includes(reaction.emoji.name) && user.id === message.author.id;
     });
 
-    collector.on('collect', (collected) => {
+    collector.on('collect', async (collected) => {
       if (collected.emoji.name === `✅`) {
-        // TODO: Iterate over these reactions and filter out Drunkcord reactions
-        // Put all users who put a 🥂 into a collection of some sort
-        //  Mention those users in the shot message
-        console.log(collected.message.reactions);
+        const shotTakers = [];
+        for (const messageReaction of collected.message.reactions.values()) {
+          if (messageReaction.emoji.name === '🥂') {
+            for (const user of messageReaction.users.values()) {
+              if (!user.bot) {
+                // only users should take shots. alcohol is bad for discord bots :)
+                shotTakers.push(user);
+              }
+            }
+          }
+        }
 
-        //   TODO: pass the users mentioned above to here
-        this.countdownToShots(message, [undefined]);
-        collector.stop();
+        if (shotTakers.length) {
+          this.countdownToShots(message, shotTakers);
+          collector.stop();
+        } else {
+          await message.say(
+            `It looks likes you're trying to take a group shot with...nobody! React with a 🥂 emoji to participate in the shot, or press 🚫 to cancel the shot!`
+          );
+        }
       }
     });
 
@@ -51,7 +63,7 @@ export class Shot extends Command {
   async countdownToShots(message: CommandMessage, shotTakers: (User | undefined)[]) {
     // TODO: This is among the least creative code I've ever written
     // Either resolve all of these in one big promise, or use some recursion or something functional
-    // Perhaps RX would do this?
+    // Perhaps RX would do this? At the very least, let's use a setInterval followed by a setTimeout
     const sentMessage = (await message.say('Shot time!')) as Message;
     setTimeout(async () => {
       await sentMessage.edit('Time to take a shot in 5');
@@ -74,16 +86,29 @@ export class Shot extends Command {
     }, 5000);
 
     setTimeout(async () => {
-      await message.say({
-        embed: {
-          color: 16777215,
-          description: 'Shot time!',
-          image: {
-            //   TODO: Build a list of random gifs that are fun to take shots to
-            url: 'https://media.giphy.com/media/xULW8JjyKvBKrIh2xy/giphy.gif',
+      try {
+        await sentMessage.delete();
+      } catch (error) {
+        console.error('An error occurred while deleting the countdown message', error);
+      }
+      try {
+        await message.say({
+          embed: {
+            color: 16777215,
+            description: `Shot time! Drink up ${shotTakers}`,
+            image: {
+              //   TODO: Build a list of random gifs that are fun to take shots to
+              url: 'https://media.giphy.com/media/xULW8JjyKvBKrIh2xy/giphy.gif',
+            },
           },
-        },
-      });
+        });
+      } catch (error) {
+        console.error('An error occurred while sending the take shot message', error);
+        // TODO: Some generic error handling, preferably the built-in commando one
+        await message.say(
+          `Oh no! An error occurred while orchestrating that group shot! Maybe just take it anyways and pretend this little error never happened?`
+        );
+      }
     }, 6000);
   }
 }
