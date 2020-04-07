@@ -6,26 +6,36 @@
 
 A Discord Bot to keep track of who is drinking in the Discord Server!
 
-### !cheers {drink name}
+Use Drunkcord to orchestrate group shots, get useful information on the beer you're having, or just raise a glass and drink with a friendly drinking buddy!
+
+## !cheers {drink name}
 
 Adds the drink you are currently drinking
 
-### !drinks
+## !beers {beer name}
+
+Outputs data from Untappd about the beer you're drinking!
+
+![Beers](assets/beers.png)
+
+## !shot
+
+Do a group shot with your whole Discord server! React with emojis to join in on the fun!
+
+![Group Shot](assets/group_shot.png)
+
+## !drinks
 
 How many total drinks have been had
 
-### !drunk
+## !drunk
 
 Lists how many drinks each participant has had
 
-### !closingtime
+## !closingtime
 
 Clears the drink list
 
-### !dc-help
+## !drunk-help
 
 Lists all commands that Drunkcord knows
-
-### !beers {beer name}
-
-Outputs data from Untappd about the beer you're drinking!
