@@ -1,68 +1,79 @@
-import Discord from "discord.js";
-import { App } from "./app";
-import DBL from "dblapi.js";
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { CommandoClient } from 'discord.js-commando';
+import { connectToPGPool } from './db/PostgresPool';
+import { initializeDatabase } from './network';
+// @ts-ignore
+import DBL from 'dblapi.js';
 
-const client = new Discord.Client();
+const path = require('path');
+require('dotenv').config();
 
-client.login(process.env.CLIENT_ID);
-client.on("error", error =>
-  console.error("An error occurred in the Discord client", error)
-);
-
-const dblAPI = new DBL(process.env.DBL_API!, client);
-
-let app = new App(client);
-
-app.client.on("ready", () => {
-  app.readyHandler();
-  setInterval(async () => {
-    try {
-      await dblAPI.postStats(client.guilds.size);
-      console.log(
-        "Successfully updated DBL with a guild count of ",
-        client.guilds.size
-      );
-    } catch (error) {
-      console.log("Error posting stats to DBL", error);
-    }
-  }, 1800000);
+const client = new CommandoClient({
+  commandPrefix: '!',
+  invite: 'https://discord.gg/5nJMzPA',
+  unknownCommandResponse: false,
 });
 
-app.client.on("message", (msg: Discord.Message) => {
-  msg.cleanContent;
-  if (was(msg, "!cheers")) {
-    app.cheersHandler(msg);
+function postDiscordGGMetrics() {
+  // this should only happen for production
+  if (process.env.DBL_API) {
+    console.log('Discord.gg API Key found, logging install count every 30 minutes');
+    const dblApi = new DBL(process.env.DBL_API, client);
+    const dblStatsInterval = setInterval(async () => {
+      try {
+        await dblApi.postStats(client.guilds.size);
+        console.log('Successfully updated DBL with a guild count of ', client.guilds.size);
+      } catch (error) {
+        console.log('Error posting stats to DBL', error);
+        clearInterval(dblStatsInterval);
+      }
+    }, 1800000);
+
+    dblApi.on('error', (error: any) => {
+      console.error('Discord.gg API is having an issue...', error);
+    });
+  } else {
+    console.log('No value for Discord.gg API, code must not be in production');
   }
+}
 
-  if (was(msg, "!drinks")) {
-    app.drinkCountHandler(msg);
+async function comeAlive() {
+  try {
+    await connectToPGPool();
+    await initializeDatabase();
+    postDiscordGGMetrics();
+    console.log('successfully connected to postgres!');
+  } catch (error) {
+    console.error('An error occurred connecting to and setting up the Postgres database', error);
   }
+}
 
-  if (was(msg, "!drunk")) {
-    app.whoIsDrunkHandler(msg);
-  }
+try {
+  client.login(process.env.CLIENT_ID);
 
-  if (was(msg, "!closingtime")) {
-    app.resetBotHandler(msg);
-  }
+  client.registry
+    .registerDefaultTypes()
+    .registerGroups([
+      ['basic-commands', 'Drunkcord Commands'],
+      ['plural-commands', 'Pluralized Drunkcord Commands'],
+    ])
+    .registerDefaultGroups()
+    .registerDefaultCommands({
+      help: false,
+    })
+    .registerCommandsIn(path.join(__dirname, 'commands'))
+    .registerCommandsIn(path.join(__dirname, 'plural-commands'));
 
-  if (was(msg, "!db-help")) {
-    app.helpHandler(msg);
-  }
+  client.once('ready', () => {
+    comeAlive();
+    console.log(`Logged in as ${client.user.tag}!`);
+    client.user.setActivity('with some new Drunkcord features');
+  });
 
-  if (was(msg, "!beers")) {
-    app.beerHandler(msg);
-  }
-});
-
-app.client.on("error", error =>
-  console.error("Another error occurred in maybe the same place", error)
-);
-
-export function was(msg: Discord.Message, command: string) {
-  // Only look for a command at the beginning of a message
-  return msg.content
-    .split(" ")[0]
-    .toLowerCase()
-    .includes(command);
+  client.on('error', (error) => {
+    // TODO: Add an analytic for this, some notifications probably
+    console.error('A fatal error occurred', error);
+  });
+} catch (error) {
+  console.error(error);
 }

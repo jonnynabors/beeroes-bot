@@ -3,35 +3,54 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.+(ts|json|js|)\"",
+    "analyze": "yarn format && yarn lint",
+    "build": "tsc --project tsconfig.build.json",
+    "build:watch": "yarn build --watch",
     "test": "jest",
-    "bundle:watch": "webpack --watch",
-    "server": "nodemon --exec node build/server.ts",
-    "start": "concurrently \"yarn run bundle:watch\" \"yarn run server\"",
-    "production": "tsc && node build/index.js"
+    "server": "nodemon --exec node build/src/index.js",
+    "start": "tsc  && concurrently \"yarn run build:watch\" \"yarn run server\"",
+    "postinstall": "tsc",
+    "production": "node build/src/index.js"
   },
   "repository": "https://github.com/jonnynabors/beeroes-bot.git",
   "author": "Jonny Nabors <jonnynabors@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/chokidar": "^2.1.3",
-    "@types/jest": "^24.0.11",
-    "@types/lodash": "^4.14.123",
-    "@types/node": "^11.11.3",
-    "@types/pg": "^7.4.14",
-    "axios": "^0.18.1",
-    "concurrently": "^4.1.0",
+    "axios": "0.19.2",
     "dblapi.js": "2.4.0",
     "discord.js": "^11.4.2",
-    "dotenv": "^7.0.0",
-    "jest": "^24.5.0",
-    "lodash": "^4.17.13",
-    "nodemon": "^1.18.10",
-    "pg": "^7.9.0",
-    "ts-jest": "^24.0.0",
-    "ts-loader": "^5.3.3",
-    "typescript": "^3.3.3333",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
+    "discord.js-commando": "0.10.0",
+    "dotenv": "8.2.0",
+    "lodash": "4.17.15",
+    "pg": "7.18.2"
+  },
+  "devDependencies": {
+    "@types/axios": "0.14.0",
+    "@types/common-tags": "1.8.0",
+    "@types/jest": "25.1.4",
+    "@types/lodash": "4.14.149",
+    "@types/node": "13.9.2",
+    "@types/pg": "7.14.3",
+    "@typescript-eslint/eslint-plugin": "2.24.0",
+    "@typescript-eslint/parser": "2.24.0",
+    "common-tags": "1.8.0",
+    "concurrently": "5.1.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.10.0",
+    "eslint-plugin-node": "11.0.0",
+    "husky": "4.2.3",
+    "jest": "25.1.0",
+    "nodemon": "2.0.2",
+    "prettier": "2.0.2",
+    "pretty-quick": "^2.0.1",
+    "ts-jest": "25.2.1",
+    "typescript": "3.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

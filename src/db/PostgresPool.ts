@@ -1,16 +1,15 @@
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
 });
 
-pool.on("error", (err: Error, client: PoolClient) => {
-  console.error("There was a fatal error with the Postgres Pool", err);
-  console.error("An error occurred for the following client", client);
+pool.on('error', (err: Error, client: PoolClient) => {
+  console.error('There was a fatal error with the Postgres Pool', err);
+  console.error('An error occurred for the following client', client);
 });
 
-// @ts-ignore
-export default function query(queryText, values?) {
+export default function query(queryText: any, values?: any) {
   return pool.query(queryText, values);
 }
 

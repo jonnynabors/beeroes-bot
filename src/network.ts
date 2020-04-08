@@ -1,8 +1,9 @@
-import { QueryArrayResult } from "pg";
-import { Message } from "discord.js";
-import * as _ from "lodash";
-import axios from "axios";
-import query from "./db/PostgresPool";
+/* eslint-disable @typescript-eslint/camelcase */
+import { QueryArrayResult } from 'pg';
+import { Message } from 'discord.js';
+import * as _ from 'lodash';
+import axios from 'axios';
+import query from './db/PostgresPool';
 
 const initializeDatabase = async () => {
   await query(
@@ -16,13 +17,12 @@ const initializeDatabase = async () => {
   );
 };
 
-const addDrink = async (message: Message, drinkName: string) => {
+const addDrink = async (username: string, guildId: string, drinkName: string) => {
   try {
     await query(
-      `INSERT INTO drinks (username, guild, drinkname, active) values ('${message.author.username}', '${message.guild.id}', '${drinkName}', true)`
+      `INSERT INTO drinks (username, guild, drinkname, active) values ('${username}', '${guildId}', '${drinkName}', true)`
     );
   } catch (error) {
-    console.log("in the bad place");
     throw new Error(error);
   }
 };
@@ -63,12 +63,12 @@ const clearDrinksForGuild = async (message: Message) => {
 };
 
 const getBeerInformation = async (beerName: string) => {
-  const response = await axios.get("https://api.untappd.com/v4/search/beer", {
+  const response = await axios.get('https://api.untappd.com/v4/search/beer', {
     params: {
-      client_id: "44F769106A523DA8E2E20429E66A2FFD8B33F2C0",
-      client_secret: "E25B9032F9CA54D0300F2544E1E854416A5BAF35",
-      q: beerName
-    }
+      client_id: process.env.UNTAPPD_CLIENT_ID,
+      client_secret: process.env.UNTAPPD_CLIENT_SECRET,
+      q: beerName,
+    },
   });
   return response.data.response.beers.items[0].beer;
 };
@@ -79,5 +79,5 @@ export {
   getDrinkCount,
   getDrinksForGuild,
   clearDrinksForGuild,
-  getBeerInformation
+  getBeerInformation,
 };
