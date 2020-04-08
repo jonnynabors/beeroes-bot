@@ -49,7 +49,9 @@ async function comeAlive() {
 }
 
 try {
-  client.login(process.env.CLIENT_ID);
+  client
+    .login(process.env.CLIENT_ID)
+    .catch((error) => console.error('An error occurred while logging in', error));
 
   client.registry
     .registerDefaultTypes()
