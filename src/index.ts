@@ -53,12 +53,16 @@ try {
 
   client.registry
     .registerDefaultTypes()
-    .registerGroups([['basic-commands', 'Drunkcord Commands']])
+    .registerGroups([
+      ['basic-commands', 'Drunkcord Commands'],
+      ['plural-commands', 'Pluralized Drunkcord Commands'],
+    ])
     .registerDefaultGroups()
     .registerDefaultCommands({
       help: false,
     })
-    .registerCommandsIn(path.join(__dirname, 'commands'));
+    .registerCommandsIn(path.join(__dirname, 'commands'))
+    .registerCommandsIn(path.join(__dirname, 'plural-commands'));
 
   client.once('ready', () => {
     comeAlive();
