@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { QueryArrayResult } from 'pg';
 import { Message } from 'discord.js';
 import * as _ from 'lodash';
@@ -64,8 +65,8 @@ const clearDrinksForGuild = async (message: Message) => {
 const getBeerInformation = async (beerName: string) => {
   const response = await axios.get('https://api.untappd.com/v4/search/beer', {
     params: {
-      client_id: '44F769106A523DA8E2E20429E66A2FFD8B33F2C0',
-      client_secret: 'E25B9032F9CA54D0300F2544E1E854416A5BAF35',
+      client_id: process.env.UNTAPPD_CLIENT_ID,
+      client_secret: process.env.UNTAPPD_CLIENT_SECRET,
       q: beerName,
     },
   });
