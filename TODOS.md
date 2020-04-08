@@ -11,12 +11,12 @@
 - BAC Calculator, but make sure people know we're not storing any user data
 - Clinking glass audio
 - "Silent mode", where I can do like `!beers two hearted ale --silent` or `!beers-silent two hearted ale` and just get a reaction as confirmation
-- "Multiple drink mode", where I can do like `!beers-multiple two hearted ale, coors light` or `!cheers-many vodka soda, whiskey rocks`
-  <!-- - Emoji voting or emoji interacting -->
-    <!-- - Trigger an event with some Emoji voting (participate or don't) -->
-    <!-- - Have a way to start the shot countdown or whatever -->
-    <!-- - Figure out if we want to have a countdown -->
-    <!-- - Add those drinks to the server -->
+  <!-- - "Multiple drink mode", where I can do like `!beers-multiple two hearted ale, coors light` or `!cheers-many vodka soda, whiskey rocks` -->
+    <!-- - Emoji voting or emoji interacting -->
+      <!-- - Trigger an event with some Emoji voting (participate or don't) -->
+      <!-- - Have a way to start the shot countdown or whatever -->
+      <!-- - Figure out if we want to have a countdown -->
+      <!-- - Add those drinks to the server -->
 
 ## Design decisions
 
@@ -25,10 +25,8 @@
 
 ## Development Tasks
 
-<!-- - Add Prettier -->
-
+- Move off of Heroku's insane \$9 a month Postgres provider. That is some nonsense
+- Think some more about moving this to an AWS EC2 instance or some server somewhere
 - Investigate a better build tool?
-- Move API key into dotenv
 - Set up some alerting/logging solution for the `client.error` related stuff
 - Better documentation so I don't forget how the whole thing works after not touching this code for weeks
-- Think some more about moving this to an AWS EC2 instance and migrating the data off of Heroku
