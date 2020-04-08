@@ -7,6 +7,7 @@ export class Cheers extends Command {
     super(client, {
       name: 'cheers',
       group: 'basic-commands',
+      aliases: ['cheer'],
       memberName: 'cheers',
       description: 'Add a drink to Drunkcord! Raise a glass and toast your friends!',
       examples: ['!cheers Vodka and Soda', '!cheers Whiskey', '!cheers Red Bull and Vodka'],

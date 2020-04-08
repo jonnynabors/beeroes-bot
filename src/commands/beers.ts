@@ -6,6 +6,7 @@ export class Beers extends Command {
     super(client, {
       name: 'beers',
       group: 'basic-commands',
+      aliases: ['beer'],
       memberName: 'beers',
       description: `Add the beer you're enjoying to Drunkcord!`,
       examples: ['!beers'],
