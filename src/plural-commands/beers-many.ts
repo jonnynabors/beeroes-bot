@@ -29,13 +29,14 @@ export class BeersMany extends Command {
       await Promise.all(
         beers.map(async (beer) => {
           const data = await getBeerInformation(beer);
-          await addDrink(message.author.username, message.guild.id, data.beer_name);
+          const richBeerName = data.beer_name.replace(/'/g, '');
+          await addDrink(message.author.username, message.guild.id, richBeerName);
         })
       );
       return await message.say(`Cheers! I'll make sure those beers get logged.`);
     } catch (error) {
       console.error('An error occurred trying to add multiple beers!', error);
-      return await message.say('Oh no! I encountered an error trying to log those drinks.');
+      throw new Error('Oh no! I encountered an error trying to log those drinks.');
     }
   }
 }
