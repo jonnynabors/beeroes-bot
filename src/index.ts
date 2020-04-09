@@ -2,9 +2,7 @@
 import { CommandoClient } from 'discord.js-commando';
 import { connectToPGPool } from './db/PostgresPool';
 import { initializeDatabase } from './network';
-// @ts-ignore
-import DBL from 'dblapi.js';
-
+const DBL = require('dblapi.js');
 const path = require('path');
 require('dotenv').config();
 
