@@ -25,9 +25,10 @@ export class Beers extends Command {
   async run(message: CommandMessage, { beerName }: any) {
     try {
       const data = await getBeerInformation(beerName);
-      await addDrink(message.author.username, message.guild.id, data.beer_name);
+      const richBeerName = data.beer_name.replace(/'/g, '');
+      await addDrink(message.author.username, message.guild.id, richBeerName);
       const fancyBeerMessage = new RichEmbed()
-        .setAuthor(`It looks like you're drinking a ${data.beer_name}!`)
+        .setAuthor(`It looks like you're drinking a ${richBeerName}!`)
         .setTitle('Let me tell you about that beer!')
         .setFooter(
           `
@@ -42,7 +43,7 @@ export class Beers extends Command {
     } catch (error) {
       console.error('An error occurred while adding a drink', error);
       try {
-        await addDrink(message.author.username, message.guild.id, beerName);
+        await addDrink(message.author.username, message.guild.id, beerName.replace(/'/g, ''));
         const embed = new RichEmbed()
           .setTitle('Oh no!')
           .setColor(0xff0000)
@@ -53,7 +54,7 @@ export class Beers extends Command {
         return message.say(embed);
       } catch (error) {
         console.log('Error adding drink:', error);
-        return message.say(`An error occurred while adding this drink :(.`);
+        throw new Error(`An error occurred while adding this drink :(.`);
       }
     }
   }

@@ -26,7 +26,10 @@ export class CheersMany extends Command {
 
   async run(message: CommandMessage, { drinkNames }: any) {
     try {
-      const drinks = (drinkNames as string).split(',').map((drink) => drink.trimLeft());
+      const drinks = (drinkNames as string)
+        .replace(/'/g, '')
+        .split(',')
+        .map((drink) => drink.trimLeft());
       await Promise.all(
         drinks.map(async (drink) => {
           await addDrink(message.author.username, message.guild.id, drink);
@@ -35,7 +38,7 @@ export class CheersMany extends Command {
       return await message.say(getRandomCheersMessage());
     } catch (error) {
       console.error('An error occurred trying to cheers multiple drinks!', error);
-      return await message.say('Oh no! I encountered an error trying to log those drinks.');
+      throw new Error('An error occurred saving those drinks!');
     }
   }
 }

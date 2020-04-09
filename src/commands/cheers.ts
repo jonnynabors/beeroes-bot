@@ -22,7 +22,7 @@ export class Cheers extends Command {
   }
 
   async run(message: CommandMessage, { drinkName }: any) {
-    await addDrink(message.author.username, message.guild.id, drinkName);
+    await addDrink(message.author.username, message.guild.id, drinkName.replace(/'/g, ''));
     return message.say(getRandomCheersMessage());
   }
 }
