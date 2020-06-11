@@ -7,7 +7,7 @@ export class Help extends Command {
       name: 'drunk-help',
       group: 'util',
       memberName: 'help',
-      aliases: ['commands'],
+      aliases: ['commands', 'dc-help'],
       description:
         'Displays a list of available commands, or detailed information for a specified command.',
       details: `
