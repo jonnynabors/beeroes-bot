@@ -18,11 +18,12 @@ const initializeDatabase = async () => {
 };
 
 const addDrink = async (username: string, guildId: string, drinkName: string) => {
+  const text = 'INSERT INTO drinks (username, guild, drinkname, active) values ($1, $2, $3, $4)';
+  const values = [`${username}`, `${guildId}`, `${drinkName}`, true];
   try {
-    await query(
-      `INSERT INTO drinks (username, guild, drinkname, active) values ('${username}', '${guildId}', '${drinkName}', true)`
-    );
+    await query(text, values);
   } catch (error) {
+    console.error(error);
     throw new Error(error);
   }
 };

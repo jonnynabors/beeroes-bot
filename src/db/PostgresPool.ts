@@ -14,5 +14,10 @@ export default function query(queryText: any, values?: any) {
 }
 
 export async function connectToPGPool() {
-  return await pool.connect();
+  try {
+    const client = await pool.connect();
+    return client;
+  } catch (e) {
+    throw Error(e);
+  }
 }
