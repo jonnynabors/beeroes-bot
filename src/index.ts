@@ -1,10 +1,10 @@
+require('dotenv').config();
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { CommandoClient } from 'discord.js-commando';
 import { connectToPGPool } from './db/PostgresPool';
 import { initializeDatabase } from './network';
 const DBL = require('dblapi.js');
 const path = require('path');
-require('dotenv').config();
 
 const client = new CommandoClient({
   commandPrefix: '!',
