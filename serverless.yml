@@ -1,0 +1,21 @@
+service: drunkcord
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: us-east-1
+
+resources:
+  Resources:
+    DrunkcordRepository:
+      Type: AWS::ECR::Repository
+      Properties:
+        RepositoryName: ${self:custom.stage}/drunkcord
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
