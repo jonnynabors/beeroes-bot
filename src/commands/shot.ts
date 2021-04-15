@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
-import { Message, RichEmbed, User } from 'discord.js';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
+import { Message, MessageEmbed, User } from 'discord.js';
 import { getRandomShotsGIF } from '../utils/helpers';
 import { addDrink } from '../network';
 export class Shot extends Command {
@@ -16,8 +16,8 @@ export class Shot extends Command {
 
   //   TODO: the ts-ignore below sucks, but it might be necessary
   //   @ts-ignore
-  async run(message: CommandMessage) {
-    const embed = new RichEmbed().setTitle(`Let's take a shot!`)
+  async run(message: CommandoMessage) {
+    const embed = new MessageEmbed().setTitle(`Let's take a shot!`)
       .setDescription(`${message.author} has request a group shot! React with an emoji to join!
       🥂: Participate in the shot\n
       ✅: We're ready to take a drink\n
@@ -57,17 +57,15 @@ export class Shot extends Command {
 
   private async doAGroupShot(
     collected: import('discord.js').MessageReaction,
-    message: CommandMessage,
+    message: CommandoMessage,
     collector: import('discord.js').ReactionCollector
   ) {
     const shotTakers = [];
-    for (const messageReaction of collected.message.reactions.values()) {
-      if (messageReaction.emoji.name === '🥂') {
-        for (const user of messageReaction.users.values()) {
-          if (!user.bot) {
-            // only users should take shots. alcohol is bad for discord bots :)
-            shotTakers.push(user);
-          }
+    for (const messageReaction of collected.message.reactions.cache.values()) {
+      for (const user of messageReaction.users.cache.values()) {
+        if (!user.bot) {
+          // only users should take shots. alcohol is bad for discord bots :)
+          shotTakers.push(user);
         }
       }
     }
@@ -81,7 +79,7 @@ export class Shot extends Command {
     }
   }
 
-  async countdownToShots(message: CommandMessage, shotTakers: (User | undefined)[]) {
+  async countdownToShots(message: CommandoMessage, shotTakers: (User | undefined)[]) {
     // TODO: This is among the least creative code I've ever written
     // Either resolve all of these in one big promise, or use some recursion or something functional
     // Perhaps RX would do this? At the very least, let's use a setInterval followed by a setTimeout
@@ -112,7 +110,6 @@ export class Shot extends Command {
 
         await Promise.all(
           shotTakers.map(async (user) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             await addDrink(user?.username!, message.guild.id, 'group shot');
           })
         );

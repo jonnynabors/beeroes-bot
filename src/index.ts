@@ -9,7 +9,6 @@ const path = require('path');
 const client = new CommandoClient({
   commandPrefix: '!',
   invite: 'https://discord.gg/5nJMzPA',
-  unknownCommandResponse: false,
 });
 
 function postDiscordGGMetrics() {
@@ -19,8 +18,8 @@ function postDiscordGGMetrics() {
     const dblApi = new DBL(process.env.DBL_API, client);
     const dblStatsInterval = setInterval(async () => {
       try {
-        await dblApi.postStats(client.guilds.size);
-        console.log('Successfully updated DBL with a guild count of ', client.guilds.size);
+        await dblApi.postStats(client.guilds.cache.size);
+        console.log('Successfully updated DBL with a guild count of ', client.guilds.cache.size);
       } catch (error) {
         console.log('Error posting stats to DBL', error);
         clearInterval(dblStatsInterval);
@@ -60,14 +59,15 @@ try {
     .registerDefaultGroups()
     .registerDefaultCommands({
       help: false,
+      unknownCommand: false,
     })
     .registerCommandsIn(path.join(__dirname, 'commands'))
     .registerCommandsIn(path.join(__dirname, 'plural-commands'));
 
   client.once('ready', () => {
     comeAlive();
-    console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setActivity('with some new Drunkcord features');
+    console.log(`Logged in as ${client.user!.tag}!`);
+    client.user!.setActivity('with some new Drunkcord features');
   });
 
   client.on('error', (error) => {

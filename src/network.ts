@@ -31,7 +31,7 @@ const addDrink = async (username: string, guildId: string, drinkName: string) =>
 const getDrinkCount = async (message: Message): Promise<QueryArrayResult> => {
   try {
     const response = await query(
-      `SELECT * FROM drinks where guild = '${message.guild.id}' and active = true`,
+      `SELECT * FROM drinks where guild = '${message.guild!.id}' and active = true`,
       []
     );
     return response;
@@ -43,7 +43,7 @@ const getDrinkCount = async (message: Message): Promise<QueryArrayResult> => {
 const getDrinksForGuild = async (message: Message) => {
   try {
     const response = await query(
-      `SELECT * FROM drinks where guild = '${message.guild.id}' and active = true`,
+      `SELECT * FROM drinks where guild = '${message.guild!.id}' and active = true`,
       []
     );
     return response.rows;
@@ -55,7 +55,7 @@ const getDrinksForGuild = async (message: Message) => {
 const clearDrinksForGuild = async (message: Message) => {
   try {
     const response = await query(
-      `UPDATE drinks SET active = false WHERE guild = '${message.guild.id}'`
+      `UPDATE drinks SET active = false WHERE guild = '${message.guild!.id}'`
     );
     return response;
   } catch (error) {
