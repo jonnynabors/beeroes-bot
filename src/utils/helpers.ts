@@ -1,6 +1,6 @@
 import { maxBy, countBy, sample } from 'lodash';
-import { RichEmbed } from 'discord.js';
-let embed: RichEmbed;
+import { MessageEmbed } from 'discord.js';
+let embed: MessageEmbed;
 // total drinks consumed by server
 let totalDrinks: number;
 // TODO: Add a type
@@ -36,8 +36,8 @@ function renderDescription(mostDrinksByUser: any) {
   }
 }
 
-function messageFormatter(drinkData: any): RichEmbed {
-  embed = new RichEmbed();
+function messageFormatter(drinkData: any): MessageEmbed {
+  embed = new MessageEmbed();
   embed.setColor('RANDOM');
   embed.setThumbnail('https://i.imgur.com/gaf3cVL.png');
 
@@ -65,7 +65,7 @@ function messageFormatter(drinkData: any): RichEmbed {
 function getRandomCheersMessage() {
   const cheersMessages = [
     `Enjoy that brewchacho, brochacho. 🍺`,
-    `Hey all you cool cats and kittens, that's a nice looking drink! 🐯`,
+    `¡Salud!`,
     `Cheers! You're not gonna just have one...are you? 🤷‍`,
     `Cheers! You know what type of decisions are made while drunk? The best kinds! 🍾`,
     `Cheers! Looks like you're about to have your favorite alcoholic drink, a lot! 🍸`,

@@ -1,4 +1,4 @@
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { addDrink, getBeerInformation } from '../network';
 export class BeersMany extends Command {
   constructor(client: CommandoClient) {
@@ -23,7 +23,7 @@ export class BeersMany extends Command {
     });
   }
 
-  async run(message: CommandMessage, { beerNames }: any) {
+  async run(message: CommandoMessage, { beerNames }: any) {
     try {
       const beers = (beerNames as string).split(',').map((beer) => beer.trimLeft());
       await Promise.all(

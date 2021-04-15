@@ -1,6 +1,6 @@
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { getBeerInformation, addDrink } from '../network';
-import { RichEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 export class Beers extends Command {
   constructor(client: CommandoClient) {
     super(client, {
@@ -22,12 +22,12 @@ export class Beers extends Command {
   }
 
   // @ts-ignore
-  async run(message: CommandMessage, { beerName }: any) {
+  async run(message: CommandoMessage, { beerName }: any) {
     try {
       const data = await getBeerInformation(beerName);
       const richBeerName = data.beer_name.replace(/'/g, '');
       await addDrink(message.author.username, message.guild.id, richBeerName);
-      const fancyBeerMessage = new RichEmbed()
+      const fancyBeerMessage = new MessageEmbed()
         .setAuthor(`It looks like you're drinking a ${richBeerName}!`)
         .setTitle('Let me tell you about that beer!')
         .setFooter(
@@ -44,7 +44,7 @@ export class Beers extends Command {
       console.error('An error occurred while adding a drink', error);
       try {
         await addDrink(message.author.username, message.guild.id, beerName.replace(/'/g, ''));
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
           .setTitle('Oh no!')
           .setColor(0xff0000)
           .setThumbnail('https://i.imgur.com/gaf3cVL.png')

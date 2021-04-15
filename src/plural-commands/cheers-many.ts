@@ -1,4 +1,4 @@
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { addDrink } from '../network';
 import { getRandomCheersMessage } from '../utils/helpers';
 export class CheersMany extends Command {
@@ -24,7 +24,7 @@ export class CheersMany extends Command {
     });
   }
 
-  async run(message: CommandMessage, { drinkNames }: any) {
+  async run(message: CommandoMessage, { drinkNames }: any) {
     try {
       const drinks = (drinkNames as string)
         .replace(/'/g, '')

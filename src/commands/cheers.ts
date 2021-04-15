@@ -1,4 +1,4 @@
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { addDrink } from '../network';
 import { getRandomCheersMessage } from '../utils/helpers';
 
@@ -21,7 +21,7 @@ export class Cheers extends Command {
     });
   }
 
-  async run(message: CommandMessage, { drinkName }: any) {
+  async run(message: CommandoMessage, { drinkName }: any) {
     await addDrink(message.author.username, message.guild.id, drinkName.replace(/'/g, ''));
     return message.say(getRandomCheersMessage());
   }

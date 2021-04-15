@@ -94,12 +94,12 @@ export class Help extends Command {
                     use ${Command.usage(
                       'command',
                       msg.guild ? msg.guild.commandPrefix : null,
-                      this.client.user
+                      this.client.user!
                     )}.
                     For example, ${Command.usage(
                       'prefix',
                       msg.guild ? msg.guild.commandPrefix : null,
-                      this.client.user
+                      this.client.user!
                     )}.
                 `}
                 To run a command in this DM, simply use ${Command.usage(
