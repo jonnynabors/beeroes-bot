@@ -23,7 +23,7 @@
     "discord.js": "12",
     "discord.js-commando": "0.12.3",
     "dotenv": "8.2.0",
-    "lodash": "4.17.15",
+    "lodash": "4.17.21",
     "pg": "8.5.1"
   },
   "devDependencies": {
