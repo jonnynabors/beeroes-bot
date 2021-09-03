@@ -10,13 +10,21 @@ Use Drunkcord to orchestrate group shots, get useful information on the beer you
 
 ## !cheers {drink name}
 
-Adds the drink you are currently drinking
+Add a drink to Drunkcord! Raise a glass and toast your friends!
+
+## !cheers-many {drink name}, {drink name}
+
+Add several drinks at once, in a comma separated piece of text. Great if you've fallen behind and want to add multiple drinks at once!
 
 ## !beers {beer name}
 
-Outputs data from Untappd about the beer you're drinking!
+Add the beer you're enjoying to Drunkcord!. Integrates with data from Untappd to tell you about the beer you're drinking!
 
 ![Beers](assets/beers.png)
+
+## !beers-many {beer name}, {beer name}
+
+Add several beers at once, in a comma separated piece of text. Great if you've fallen behind and want to add multiple beers!
 
 ## !shot
 
@@ -26,11 +34,11 @@ Do a group shot with your whole Discord server! React with emojis to join in on 
 
 ## !drinks
 
-How many total drinks have been had
+Return the number of drinks that your server has currently consumed!
 
 ## !drunk
 
-Lists how many drinks each participant has had
+Find out who is the drunkest in your server!
 
 ## !closingtime
 
