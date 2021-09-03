@@ -8,7 +8,6 @@ const path = require('path');
 
 const client = new CommandoClient({
   commandPrefix: '!',
-  invite: 'https://discord.gg/5nJMzPA',
 });
 
 function postDiscordGGMetrics() {
